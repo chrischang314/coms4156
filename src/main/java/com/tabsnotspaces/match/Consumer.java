@@ -15,7 +15,8 @@ public class Consumer {
 	private long consumerId;
 	private String consumerName;
 	private long parentClientId; // TODO make as joint key?
-	private String location;
+	private String address;
+	private List<Double> location;
 	// TODO Fetch lat long from Maps API, for physical address
 	// TODO add each rating given, to help in future filtering
 	@ManyToMany
@@ -61,13 +62,17 @@ public class Consumer {
 		consumerName = name;
 	}
 	
-	public String getLocation() {
+	public List<Double> getLocation() {
 		return location;
 	}
 	
-	public void setLocation(String location) {
+	public void setLocation(List<Double> location) {
 		this.location = location;
 	}
+
+	public String getAddress() { return address; }
+
+	public void setAddress(String address) { this.address = address; }
 	
 	public List<Appointment> getAppointments() {
 		return appointments;
