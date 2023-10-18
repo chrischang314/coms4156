@@ -154,7 +154,6 @@ public class MatchingController {
 		Date requestedDate = consumerRequest.getRequestDate();
 		String requestedService = consumerRequest.getServiceType();
 		Consumer consumer = new Consumer();
-		System.out.println(consumerRequest.getConsumerId());
 		Optional<Consumer> cOpt = consumerRepository.findById(consumerRequest.getConsumerId());
 		if(cOpt.isPresent()) { // TODO return error otherwise
 			consumer = cOpt.get();
