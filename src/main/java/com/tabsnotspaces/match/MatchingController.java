@@ -1,10 +1,7 @@
 package com.tabsnotspaces.match;
 
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -19,9 +16,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
@@ -69,7 +63,13 @@ public class MatchingController {
 		
 		return repository.save(client);
 	}
-	
+
+
+	@DeleteMapping("/client/{id}")
+	void deleteClient(@PathVariable Long id) {
+		repository.deleteById(id);
+	}
+
 	@PostMapping("/client/{id}/consumer")
 	public Consumer consumerAdd(@PathVariable Long id,
 			@RequestBody Consumer consumer){
@@ -151,7 +151,7 @@ public class MatchingController {
 	}
 	@PostMapping("/client/{id}/consumerRequest")
 	public List<ServiceProvider> sortedProvidersResponse(@RequestBody ConsumerRequest consumerRequest) {
-		Date requestedDate = consumerRequest.getRequestDate();
+		TupleDateTime requestedDate = consumerRequest.getRequestDate();
 		String requestedService = consumerRequest.getServiceType();
 		Consumer consumer = new Consumer();
 		Optional<Consumer> cOpt = consumerRepository.findById(consumerRequest.getConsumerId());
@@ -160,7 +160,7 @@ public class MatchingController {
 		}
 		// Fetch providers who match the requested date & service
 		List<ServiceProvider> availableProviders =
-				new ArrayList<ServiceProvider>(serviceProviderRepository.findByAvailability(requestedDate));
+				new ArrayList<ServiceProvider>(serviceProviderRepository.findByAvailabilities(requestedDate));
 		for (int i = 0; i < availableProviders.size(); i++) {
 			if (!(availableProviders.get(i).getServicesOffered().contains(requestedService))) {
 				availableProviders.remove(availableProviders.get(i));
@@ -198,7 +198,33 @@ public class MatchingController {
 
 		return appointment;
 	}
-	
+
+	@DeleteMapping("/client/{id}/consumer/{consumerId}")
+	void deleteCustomer(@PathVariable Long id, @PathVariable Long consumerId) {
+		consumerRepository.deleteById(consumerId);
+	}
+
+	@DeleteMapping("/client/{id}/service_providers/{serviceProviderId}")
+	void deleteServiceProviders(@PathVariable Long id, @PathVariable Long serviceProviderId) {
+		serviceProviderRepository.deleteById(serviceProviderId);
+	}
+
+	@DeleteMapping("/client/{id}/appointment/{appointmentId}")
+	void deleteAppointment(@PathVariable Long id, @PathVariable Long appointmentId) {
+		appointmentRepository.deleteById(appointmentId);
+
+		//TODO confirm if we also need to delete from serviceProviders and consumers appointment lists and figure out.
+	}
+
+	@DeleteMapping("/client/{id}/consumerRequest/{consumerRequestId}")
+	void deleteConsumerRequest(@PathVariable Long id, @PathVariable Long consumerRequestId) {
+		Optional<Client> clientOpt = repository.findById(id);
+		Client client = null;
+		if(clientOpt.isPresent()) {
+			client = clientOpt.get();
+			consumerRequestRepository.deleteById(consumerRequestId);
+		}
+	}
 }
 
 class ServiceProviderComparator implements Comparator<ServiceProvider> {
