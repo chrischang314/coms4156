@@ -17,7 +17,8 @@ public class ServiceProvider {
 	private long providerId;
 	private long parentClientId; // TODO define as a joint key?
 	private String providerName;
-	private String location;
+	private String address;
+	private List<Double> location;
 	private List<String> servicesOffered; // TODO convert to an entity type serviceNum?
 	private Date availability;
 	//private List<LocalDateTime> availability; // TODO convert to a List of Pair<start,end>
@@ -39,7 +40,7 @@ public class ServiceProvider {
 
 	public ServiceProvider(long providerId,
 			long parentClientId, String providerName,
-			String location, List<String> servicesOffered,
+						   List<Double> location, String address, List<String> servicesOffered,
 			//List<LocalDateTime> availability,
 			Date availability,
 			long avgRating, List<Appointment> bookings) {
@@ -48,6 +49,7 @@ public class ServiceProvider {
 		this.providerId = providerId;
 		this.providerName = providerName;
 		this.location = location;
+		this.address = address;
 		this.servicesOffered = servicesOffered;
 		this.availability = availability;
 		this.avgRating = avgRating;
@@ -78,13 +80,16 @@ public class ServiceProvider {
 		providerName = name;
 	}
 	
-	public String getLocation() {
+	public List<Double> getLocation() {
 		return location;
 	}
 	
-	public void setLocation(String location) {
+	public void setLocation(List<Double> location) {
 		this.location = location;
 	}
+
+	public String getAddress() { return address; }
+	public void setAddress(String address) { this.address = address; }
 	
 	public List<String> getServicesOffered() {
 		return servicesOffered;
