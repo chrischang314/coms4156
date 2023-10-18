@@ -1,6 +1,7 @@
 package com.tabsnotspaces.match;
 
 import jakarta.persistence.*;
+
 import java.util.List;
 
 
@@ -11,7 +12,25 @@ public class ServiceProvider {
     private long id;
     private long parentClientId; // TODO define as a joint key?
     private String providerName;
-    private String location;
+    private String address;
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setLocation(List<Double> location) {
+        this.location = location;
+    }
+
+    public List<Double> getLocation() {
+        return location;
+    }
+
+    private List<Double> location;
     private List<String> servicesOffered; // TODO convert to an entity type serviceNum?
     @ElementCollection
     @CollectionTable(name = "service_provider_availabilities", joinColumns = @JoinColumn(name = "service_provider_id"))
@@ -19,9 +38,11 @@ public class ServiceProvider {
     private long avgRating;
     @ManyToMany
     private List<Appointment> bookings;
-    public ServiceProvider(long parentClientId, String providerName, String location, List<String> servicesOffered, List<TupleDateTime> availabilities, long avgRating, List<Appointment> bookings) {
+
+    public ServiceProvider(long parentClientId, String providerName, String address, List<Double> location, List<String> servicesOffered, List<TupleDateTime> availabilities, long avgRating, List<Appointment> bookings) {
         this.parentClientId = parentClientId;
         this.providerName = providerName;
+        this.address = address;
         this.location = location;
         this.servicesOffered = servicesOffered;
         this.availabilities = availabilities;
@@ -69,14 +90,6 @@ public class ServiceProvider {
 
     public void setProviderName(String name) {
         providerName = name;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
     }
 
     public List<String> getServicesOffered() {

@@ -6,8 +6,11 @@ import org.springframework.ui.Model;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -96,7 +99,7 @@ public class MatchingController {
 			ServiceProvider createdServiceProvider = serviceProviderRepository.save(serviceProvider);
 			client.getServiceProviders().add(serviceProvider);
 			repository.save(client);
-			
+
 			return createdServiceProvider;
 		}
 
@@ -125,7 +128,7 @@ public class MatchingController {
 	 * repository.findAll()); return "clients"; }
 	 */	
 	
-	@PostMapping("/client/{id}/consumerRequest")
+	//@PostMapping("/client/{id}/consumerRequest")
 	public ConsumerRequest consumerAdd(@PathVariable Long id, @RequestBody ConsumerRequest consumerRequest){
 		Optional<Client> clientOpt = repository.findById(id);
 		if(clientOpt.isPresent()) { // TODO report error otherwise
@@ -140,13 +143,33 @@ public class MatchingController {
 				consumer.getConsumerRequests().add(consumerRequest);
 				consumerRepository.save(consumer);
 			}
-			
+
 			return createdConsumerRequest;
 		}
 
 		return consumerRequest;
 	}
-	
+	@PostMapping("/client/{id}/consumerRequest")
+	public List<ServiceProvider> sortedProvidersResponse(@RequestBody ConsumerRequest consumerRequest) {
+		TupleDateTime requestedDate = consumerRequest.getRequestDate();
+		String requestedService = consumerRequest.getServiceType();
+		Consumer consumer = new Consumer();
+		Optional<Consumer> cOpt = consumerRepository.findById(consumerRequest.getConsumerId());
+		if(cOpt.isPresent()) { // TODO return error otherwise
+			consumer = cOpt.get();
+		}
+		// Fetch providers who match the requested date & service
+		List<ServiceProvider> availableProviders =
+				new ArrayList<ServiceProvider>(serviceProviderRepository.findByAvailabilities(requestedDate));
+		for (int i = 0; i < availableProviders.size(); i++) {
+			if (!(availableProviders.get(i).getServicesOffered().contains(requestedService))) {
+				availableProviders.remove(availableProviders.get(i));
+			}
+		}
+		Collections.sort(availableProviders, new ServiceProviderComparator(consumer));
+		return availableProviders;
+	}
+
 	@PostMapping("/client/{id}/bookAppointment")
 	public Appointment appointmentAdd(@PathVariable Long id, @RequestBody Appointment appointment){
 		Optional<Client> clientOpt = repository.findById(id);
@@ -201,5 +224,43 @@ public class MatchingController {
 			client = clientOpt.get();
 			consumerRequestRepository.deleteById(consumerRequestId);
 		}
+	}
+}
+
+class ServiceProviderComparator implements Comparator<ServiceProvider> {
+
+	private Consumer c;
+
+	ServiceProviderComparator(Consumer c) {
+		this.c = c;
+	}
+
+	// Calculates distance between two lat/long coordinate pairs
+	private static double distance(double lat1, double lon1, double lat2, double lon2) {
+		if ((lat1 == lat2) && (lon1 == lon2)) {
+			return 0;
+		}
+		else {
+			double t = lon1 - lon2;
+			double dist = Math.sin(Math.toRadians(lat1)) * Math.sin(Math.toRadians(lat2)) +
+					Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) * Math.cos(Math.toRadians(t));
+			dist = Math.acos(dist);
+			dist = Math.toDegrees(dist);
+			dist = dist * 60 * 1.1515;
+			return (dist);
+		}
+	}
+
+	// Sort service providers first by distance from consumer, then by rating
+	@Override
+	public int compare(ServiceProvider o1, ServiceProvider o2) {
+		List<Double> consumerLocation = c.getLocation();
+		double dist1 = distance(consumerLocation.get(0), consumerLocation.get(1), o1.getLocation().get(0), o1.getLocation().get(1));
+		double dist2 = distance(consumerLocation.get(0), consumerLocation.get(1), o2.getLocation().get(0), o2.getLocation().get(1));
+		int value1 = Double.compare(dist1, dist2);
+		if (value1 == 0) {
+			return Long.compare(o2.getAvgRating(), o1.getAvgRating());
+		}
+		return value1;
 	}
 }
