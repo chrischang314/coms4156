@@ -183,6 +183,15 @@ public class MatchingController {
 				Optional<ServiceProvider> providerOpt = serviceProviderRepository.findById(appointment.getProviderID());
 				if(providerOpt.isPresent()) { 		// TODO report error otherwise
 					ServiceProvider provider = providerOpt.get();
+
+					// check that service provider is available for appointment and service requested matches
+					if (!provider.getServicesOffered().contains(appointment.getServiceType())) {
+						throw new RuntimeException("Service not available for this provider");
+					}
+					if (!provider.getAvailabilities().contains(appointment.getAppointmentTime())) {
+						throw new RuntimeException("Service provider not available at the requested time");
+					}
+
 					Appointment createdAppointment = appointmentRepository.save(appointment);
 					
 					consumer.getAppointments().add(appointment);
