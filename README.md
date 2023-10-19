@@ -58,7 +58,3 @@ To run the Match Application, follow these steps:
 2. Configure your database settings in the application.
 3. Build and run the application.
 4. Access the APIs using the provided endpoints.
-
----
-
-**Note**: This README provides a high-level overview of the Match Application. For detailed API usage and code implementation, refer to the source code.
