@@ -36,7 +36,12 @@ public class MatchingController {
 	@Autowired
 	AppointmentRepository appointmentRepository;
 
-	
+	/**
+	 * Retrieve a client by ID.
+	 *
+	 * @param id The ID of the client to retrieve.
+	 * @return The client with the specified ID.
+	 */
 	@GetMapping("/client/{id}")
 	public Client client(@PathVariable Long id) {
 		Optional<Client> clientOpt = repository.findById(id);
@@ -49,13 +54,25 @@ public class MatchingController {
 	}
 	
 	// https://stackoverflow.com/questions/57184276/the-method-findonelong-is-undefined-for-the-type-personrepository
-	
+
+	/**
+	 * Retrieve a list of all clients.
+	 *
+	 * @return An iterable list of all clients.
+	 */
 	@GetMapping("/clients")
 	public Iterable<Client> clientsList(){
 		return repository.findAll();
 	}
 	
 	// TODO change to @RequestBody Client client as input
+	/**
+	 * Create a new client.
+	 *
+	 * @param name  The name of the new client.
+	 * @param model The model for the client.
+	 * @return The newly created client.
+	 */
 	@PostMapping("/clients")
 	public Client clientsAdd(@RequestParam String name, Model model){
 		Client client = new Client();
@@ -64,12 +81,23 @@ public class MatchingController {
 		return repository.save(client);
 	}
 
-
+	/**
+	 * Delete a client by ID.
+	 *
+	 * @param id The ID of the client to delete.
+	 */
 	@DeleteMapping("/client/{id}")
 	void deleteClient(@PathVariable Long id) {
 		repository.deleteById(id);
 	}
 
+	/**
+	 * Add a new consumer to a client.
+	 *
+	 * @param id       The ID of the client.
+	 * @param consumer The new consumer to add.
+	 * @return The newly created consumer.
+	 */
 	@PostMapping("/client/{id}/consumer")
 	public Consumer consumerAdd(@PathVariable Long id,
 			@RequestBody Consumer consumer){
@@ -88,7 +116,14 @@ public class MatchingController {
 
 		return consumer;
 	}
-	
+
+	/**
+	 * Add a new service provider to a client.
+	 *
+	 * @param id               The ID of the client.
+	 * @param serviceProvider   The new service provider to add.
+	 * @return The newly created service provider.
+	 */
 	@PostMapping("/client/{id}/serviceProvider")
 	public ServiceProvider serviceProviderAdd(@PathVariable Long id, @RequestBody ServiceProvider serviceProvider){
 		Optional<Client> clientOpt = repository.findById(id);
@@ -129,6 +164,13 @@ public class MatchingController {
 	 */	
 	
 	//@PostMapping("/client/{id}/consumerRequest")
+	/**
+	 * Add a new consumer request to a client.
+	 *
+	 * @param id                The ID of the client.
+	 * @param consumerRequest   The new consumer request to add.
+	 * @return The newly created consumer request.
+	 */
 	public ConsumerRequest consumerAdd(@PathVariable Long id, @RequestBody ConsumerRequest consumerRequest){
 		Optional<Client> clientOpt = repository.findById(id);
 		if(clientOpt.isPresent()) { // TODO report error otherwise
@@ -149,6 +191,13 @@ public class MatchingController {
 
 		return consumerRequest;
 	}
+
+	/**
+	 * Retrieve a list of service providers sorted by proximity and rating.
+	 *
+	 * @param consumerRequest The consumer request with date and service type.
+	 * @return A list of service providers matching the request, sorted by proximity and rating.
+	 */
 	@PostMapping("/client/{id}/consumerRequest")
 	public List<ServiceProvider> sortedProvidersResponse(@RequestBody ConsumerRequest consumerRequest) {
 		TupleDateTime requestedDate = consumerRequest.getRequestDate();
@@ -170,6 +219,13 @@ public class MatchingController {
 		return availableProviders;
 	}
 
+	/**
+	 * Book an appointment with a service provider.
+	 *
+	 * @param id          The ID of the client.
+	 * @param appointment The new appointment to book.
+	 * @return The newly created appointment.
+	 */
 	@PostMapping("/client/{id}/bookAppointment")
 	public Appointment appointmentAdd(@PathVariable Long id, @RequestBody Appointment appointment){
 		Optional<Client> clientOpt = repository.findById(id);
@@ -199,16 +255,34 @@ public class MatchingController {
 		return appointment;
 	}
 
+	/**
+	 * Delete a consumer by ID.
+	 *
+	 * @param id         The ID of the client.
+	 * @param consumerId The ID of the consumer to delete.
+	 */
 	@DeleteMapping("/client/{id}/consumer/{consumerId}")
 	void deleteCustomer(@PathVariable Long id, @PathVariable Long consumerId) {
 		consumerRepository.deleteById(consumerId);
 	}
 
+	/**
+	 * Delete a service provider by ID.
+	 *
+	 * @param id                  The ID of the client.
+	 * @param serviceProviderId    The ID of the service provider to delete.
+	 */
 	@DeleteMapping("/client/{id}/service_providers/{serviceProviderId}")
 	void deleteServiceProviders(@PathVariable Long id, @PathVariable Long serviceProviderId) {
 		serviceProviderRepository.deleteById(serviceProviderId);
 	}
 
+	/**
+	 * Delete an appointment by ID.
+	 *
+	 * @param id              The ID of the client.
+	 * @param appointmentId   The ID of the appointment to delete.
+	 */
 	@DeleteMapping("/client/{id}/appointment/{appointmentId}")
 	void deleteAppointment(@PathVariable Long id, @PathVariable Long appointmentId) {
 		appointmentRepository.deleteById(appointmentId);
@@ -216,6 +290,12 @@ public class MatchingController {
 		//TODO confirm if we also need to delete from serviceProviders and consumers appointment lists and figure out.
 	}
 
+	/**
+	 * Delete a consumer request by ID.
+	 *
+	 * @param id                   The ID of the client.
+	 * @param consumerRequestId    The ID of the consumer request to delete.
+	 */
 	@DeleteMapping("/client/{id}/consumerRequest/{consumerRequestId}")
 	void deleteConsumerRequest(@PathVariable Long id, @PathVariable Long consumerRequestId) {
 		Optional<Client> clientOpt = repository.findById(id);
