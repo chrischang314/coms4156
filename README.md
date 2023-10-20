@@ -52,9 +52,16 @@ The Match Application uses the following data models:
 
 ## Getting Started
 
+Prerequisites: 
+Before you run the Match Application, since we are using a Cloud SQL server to handle persistent data, you will need the Google Cloud CLI and MySQL installed on your laptop. 
+
 To run the Match Application, follow these steps:
 
 1. Clone the project repository.
 2. Configure your database settings in the application.
 3. Build and run the application.
 4. Access the APIs using the provided endpoints.
+
+## Testing
+The link to the Postman Collection with some start API's can be found [here](https://app.getpostman.com/join-team?invite_code=409679a1dec844deadebd4a22f3c5acd&target_code=a92949bc4a1ae5d66291956ecbb26cf5).
+A video of API testing via Postman can be seen [here](https://www.youtube.com/watch?v=fzW7lfTNeZs).
