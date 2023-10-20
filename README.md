@@ -52,6 +52,9 @@ The Match Application uses the following data models:
 
 ## Getting Started
 
+Prerequisites: 
+Before you run the Match Application, since we are using a Cloud SQL server to handle persistent data, you will need the Google Cloud CLI and MySQL installed on your laptop. 
+
 To run the Match Application, follow these steps:
 
 1. Clone the project repository.
