@@ -15,7 +15,7 @@ public class Appointment {
     private long appointmentId;
 
     private TupleDateTime appointmentTime;
-    private String serviceType;
+    private Service serviceType;
     private long providerID; // TODO convert to entity type?
     private long consumerId;
 
@@ -34,7 +34,7 @@ public class Appointment {
      * @param providerID     The ID of the provider associated with the appointment.
      * @param consumerId     The ID of the consumer associated with the appointment.
      */
-    public Appointment(TupleDateTime appointmentTime, String serviceType, long providerID, long consumerId) {
+    public Appointment(TupleDateTime appointmentTime, Service serviceType, long providerID, long consumerId) {
         this.appointmentTime = appointmentTime;
         this.serviceType = serviceType;
         this.providerID = providerID;
@@ -82,7 +82,7 @@ public class Appointment {
      *
      * @return The type of service for the appointment.
      */
-    public String getServiceType() {
+    public Service getServiceType() {
         return serviceType;
     }
 
@@ -91,7 +91,7 @@ public class Appointment {
      *
      * @param serviceType The type of service for the appointment to set.
      */
-    public void setServiceType(String serviceType) {
+    public void setServiceType(Service serviceType) {
         this.serviceType = serviceType;
     }
 
