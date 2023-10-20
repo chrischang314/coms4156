@@ -3,7 +3,7 @@ package com.tabsnotspaces.match;
 import jakarta.persistence.*;
 
 import java.util.List;
-
+import java.util.Set;
 
 @Entity
 public class ServiceProvider {
@@ -13,6 +13,14 @@ public class ServiceProvider {
     private long parentClientId; // TODO define as a joint key?
     private String providerName;
     private String address;
+
+    @ManyToMany
+    @JoinTable(
+            name = "provider_service",
+            joinColumns = @JoinColumn(name = "provider_id"),
+            inverseJoinColumns = @JoinColumn(name = "service_id")
+    )
+    private Set<Service> services;
 
     public String getAddress() {
         return address;
@@ -31,7 +39,6 @@ public class ServiceProvider {
     }
 
     private List<Double> location;
-    private List<String> servicesOffered; // TODO convert to an entity type serviceNum?
     @ElementCollection
     @CollectionTable(name = "service_provider_availabilities", joinColumns = @JoinColumn(name = "service_provider_id"))
     private List<TupleDateTime> availabilities;
@@ -51,12 +58,12 @@ public class ServiceProvider {
      * @param avgRating        The average rating of the service provider.
      * @param bookings         The list of appointments booked with the service provider.
      */
-    public ServiceProvider(long parentClientId, String providerName, String address, List<Double> location, List<String> servicesOffered, List<TupleDateTime> availabilities, long avgRating, List<Appointment> bookings) {
+    public ServiceProvider(long parentClientId, String providerName, String address, List<Double> location, Set<Service> servicesOffered, List<TupleDateTime> availabilities, long avgRating, List<Appointment> bookings) {
         this.parentClientId = parentClientId;
         this.providerName = providerName;
         this.address = address;
         this.location = location;
-        this.servicesOffered = servicesOffered;
+        this.services = servicesOffered;
         this.availabilities = availabilities;
         this.avgRating = avgRating;
         this.bookings = bookings;
@@ -157,8 +164,8 @@ public class ServiceProvider {
      *
      * @return The list of services offered by the provider.
      */
-    public List<String> getServicesOffered() {
-        return servicesOffered;
+    public Set<Service> getServicesOffered() {
+        return services;
     }
 
     /**
@@ -166,8 +173,8 @@ public class ServiceProvider {
      *
      * @param servicesOffered The list of services offered by the provider.
      */
-    public void setServicesOffered(List<String> servicesOffered) {
-        this.servicesOffered = servicesOffered;
+    public void setServicesOffered(Set<Service> servicesOffered) {
+        this.services = servicesOffered;
     }
 
     /*
