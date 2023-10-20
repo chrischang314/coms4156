@@ -82,7 +82,6 @@ class MatchingControllerTest {
 
     @Test
     void deleteClient() {
-
     }
 
     @Test
@@ -107,6 +106,21 @@ class MatchingControllerTest {
 
     @Test
     void serviceProviderAdd() {
+        ServiceProviderRepository serviceProviderRepository = Mockito.mock(ServiceProviderRepository.class);
+        Model model = Mockito.mock(Model.class);
+        Client client = new Client();
+        client.setClientId(1);
+        client.setClientName("Client1");
+        String name = "Client1";
+        when(clientRepository.save(client)).thenReturn(client);
+
+        ServiceProvider serviceProvider = new ServiceProvider();
+        serviceProvider.setAddress("New York");
+        serviceProvider.setId(1);
+        serviceProvider.setParentClientId(1);
+        when(serviceProviderRepository.save(serviceProvider)).thenReturn(serviceProvider);
+        ServiceProvider result = matchingController.serviceProviderAdd(1L, serviceProvider);
+        assertEquals(result, serviceProvider);
     }
 
     @Test
@@ -119,6 +133,21 @@ class MatchingControllerTest {
 
     @Test
     void appointmentAdd() {
+        AppointmentRepository appointmentRepository = Mockito.mock(AppointmentRepository.class);
+        Model model = Mockito.mock(Model.class);
+        Client client = new Client();
+        client.setClientId(1);
+        client.setClientName("Client1");
+        String name = "Client1";
+        when(clientRepository.save(client)).thenReturn(client);
+
+        Appointment appointment = new Appointment();
+        appointment.setAppointmentId(1);
+        appointment.setConsumerId(1);
+        appointment.setProviderID(1);
+        when(appointmentRepository.save(appointment)).thenReturn(appointment);
+        Appointment result = matchingController.appointmentAdd(1L, appointment);
+        assertEquals(result, appointment);
     }
 
     @Test
