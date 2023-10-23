@@ -3,6 +3,7 @@ package com.tabsnotspaces.match;
 import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.Set;
 
 
 @Entity
@@ -10,7 +11,23 @@ public class ServiceProvider {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    private long parentClientId; // TODO define as a joint key?
+
+    @ManyToMany
+    @JoinTable(
+            name = "provider_service",
+            joinColumns = @JoinColumn(name = "provider_id"),
+            inverseJoinColumns = @JoinColumn(name = "service_id")
+    )
+    private Set<Service> services;
+
+    @ManyToMany
+    @JoinTable(
+            name = "client_provider",
+            joinColumns = @JoinColumn(name = "provider_id"),
+            inverseJoinColumns = @JoinColumn(name = "client_id")
+    )
+    private Set<Client> clients;
+
     private String providerName;
     private String address;
 
@@ -30,8 +47,18 @@ public class ServiceProvider {
         return location;
     }
 
+    public ServiceProvider(Set<Service> services, Set<Client> clients, String providerName, String address, List<Double> location, List<TupleDateTime> availabilities, long avgRating, List<Appointment> bookings) {
+        this.services = services;
+        this.clients = clients;
+        this.providerName = providerName;
+        this.address = address;
+        this.location = location;
+        this.availabilities = availabilities;
+        this.avgRating = avgRating;
+        this.bookings = bookings;
+    }
+
     private List<Double> location;
-    private List<String> servicesOffered; // TODO convert to an entity type serviceNum?
     @ElementCollection
     @CollectionTable(name = "service_provider_availabilities", joinColumns = @JoinColumn(name = "service_provider_id"))
     private List<TupleDateTime> availabilities;
@@ -40,44 +67,12 @@ public class ServiceProvider {
     private List<Appointment> bookings;
 
     /**
-     * Constructs a ServiceProvider with the provided attributes.
-     *
-     * @param parentClientId The ID of the parent client.
-     * @param providerName   The name of the service provider.
-     * @param address        The address of the service provider.
-     * @param location       The location coordinates of the service provider.
-     * @param servicesOffered The list of services offered by the provider.
-     * @param availabilities   The availabilities of the service provider.
-     * @param avgRating        The average rating of the service provider.
-     * @param bookings         The list of appointments booked with the service provider.
-     */
-    public ServiceProvider(long parentClientId, String providerName, String address, List<Double> location, List<String> servicesOffered, List<TupleDateTime> availabilities, long avgRating, List<Appointment> bookings) {
-        this.parentClientId = parentClientId;
-        this.providerName = providerName;
-        this.address = address;
-        this.location = location;
-        this.servicesOffered = servicesOffered;
-        this.availabilities = availabilities;
-        this.avgRating = avgRating;
-        this.bookings = bookings;
-    }
-
-    /**
      * Default constructor for ServiceProvider.
      */
     public ServiceProvider() {
         super();
     }
 
-    /**
-     * Constructs a ServiceProvider with the provided parent client ID.
-     *
-     * @param parentClientId The ID of the parent client.
-     */
-    public ServiceProvider(long parentClientId) {
-        super();
-        this.parentClientId = parentClientId;
-    }
 
     /**
      * Get the ID of the service provider.
@@ -117,24 +112,6 @@ public class ServiceProvider {
     }
 
     /**
-     * Get the parent client ID of the service provider.
-     *
-     * @return The parent client ID of the service provider.
-     */
-    public long getParentClientId() {
-        return parentClientId;
-    }
-
-    /**
-     * Set the parent client ID of the service provider.
-     *
-     * @param parentClientId The parent client ID of the service provider.
-     */
-    public void setParentClientId(long parentClientId) {
-        this.parentClientId = parentClientId;
-    }
-
-    /**
      * Get the name of the service provider.
      *
      * @return The name of the service provider.
@@ -152,30 +129,6 @@ public class ServiceProvider {
         providerName = name;
     }
 
-    /**
-     * Get the list of services offered by the provider.
-     *
-     * @return The list of services offered by the provider.
-     */
-    public List<String> getServicesOffered() {
-        return servicesOffered;
-    }
-
-    /**
-     * Set the list of services offered by the provider.
-     *
-     * @param servicesOffered The list of services offered by the provider.
-     */
-    public void setServicesOffered(List<String> servicesOffered) {
-        this.servicesOffered = servicesOffered;
-    }
-
-    /*
-     * public List<LocalDateTime> getAvailability() { return availability; }
-     *
-     * public void setAvailability(List<LocalDateTime> availability) {
-     * this.availability = availability; }
-     */
     /**
      * Get the average rating of the service provider.
      *
@@ -210,5 +163,21 @@ public class ServiceProvider {
      */
     public void setBookings(List<Appointment> bookings) {
         this.bookings = bookings;
+    }
+
+    public Set<Service> getServices() {
+        return services;
+    }
+
+    public void setServices(Set<Service> services) {
+        this.services = services;
+    }
+
+    public Set<Client> getClients() {
+        return clients;
+    }
+
+    public void setClients(Set<Client> clients) {
+        this.clients = clients;
     }
 }

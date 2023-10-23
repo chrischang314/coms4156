@@ -1,12 +1,9 @@
 package com.tabsnotspaces.match;
 
 import java.util.List;
+import java.util.Set;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
 
 /**
  * This class represents a Client entity.
@@ -23,8 +20,15 @@ public class Client {
 	private List<Consumer> consumers;
 	// AddConsumer function - check service type to belong to a limited set
 	@ManyToMany
+	@JoinTable(
+			name = "client_service",
+			joinColumns = @JoinColumn(name = "client_id"),
+			inverseJoinColumns = @JoinColumn(name = "service_id")
+	)
+	private Set<Service> services;
+
+	@ManyToMany
 	private List<ServiceProvider> serviceProviders;
-	// TODO Services allowed
 
 	/**
 	 * Default constructor for the Client class.
@@ -33,6 +37,13 @@ public class Client {
 		super();
 	}
 	// https://stackoverflow.com/questions/57369016/el1008e-property-or-field-username-cannot-be-found-on-object-of-type-userhttps://stackoverflow.com/questions/57369016/el1008e-property-or-field-username-cannot-be-found-on-object-of-type-user
+
+	public Client(String clientName, List<Consumer> consumers, Set<Service> services, List<ServiceProvider> serviceProviders) {
+		this.clientName = clientName;
+		this.consumers = consumers;
+		this.services = services;
+		this.serviceProviders = serviceProviders;
+	}
 
 	/**
 	 * Getter for clientId.
@@ -105,5 +116,13 @@ public class Client {
 	 */
 	public void setServiceProviders(List<ServiceProvider> serviceProviders) {
 		this.serviceProviders = serviceProviders;
+	}
+
+	public Set<Service> getServices() {
+		return services;
+	}
+
+	public void setServices(Set<Service> services) {
+		this.services = services;
 	}
 }

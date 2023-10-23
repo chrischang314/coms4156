@@ -16,7 +16,7 @@ public class ConsumerRequest {
 	//private LocalDateTime startTime;
 	//private LocalDateTime endTime; TODO restore these
 	private TupleDateTime requestDate;
-	private String serviceType;
+	private Service serviceType;
 	private long preferredProviderID; // TODO Convert to list
 
 	/**
@@ -35,7 +35,7 @@ public class ConsumerRequest {
 	 * @param preferredProviderID  The ID of the preferred service provider.
 	 */
 	public ConsumerRequest(TupleDateTime requestDate,
-			String serviceType,
+			Service serviceType,
 			long preferredProviderID) {
 		this.requestDate = requestDate;
 		this.serviceType = serviceType;
@@ -119,7 +119,7 @@ public class ConsumerRequest {
 	 *
 	 * @return The type of service requested.
 	 */
-	public String getServiceType() {
+	public Service getServiceType() {
 		return serviceType;
 	}
 
@@ -128,7 +128,7 @@ public class ConsumerRequest {
 	 *
 	 * @param serviceType The type of service to set.
 	 */
-	public void setServiceType(String serviceType) {
+	public void setServiceType(Service serviceType) {
 		this.serviceType = serviceType;
 	}
 

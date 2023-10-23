@@ -1,9 +1,6 @@
 package com.tabsnotspaces.match;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 /**
  * This class represents an Appointment entity.
@@ -15,7 +12,8 @@ public class Appointment {
     private long appointmentId;
 
     private TupleDateTime appointmentTime;
-    private String serviceType;
+    @ManyToOne
+    private Service service;
     private long providerID; // TODO convert to entity type?
     private long consumerId;
 
@@ -30,13 +28,13 @@ public class Appointment {
      * Parameterized constructor for the Appointment class.
      *
      * @param appointmentTime The date and time of the appointment.
-     * @param serviceType    The type of service for the appointment.
+     * @param service    The type of service for the appointment.
      * @param providerID     The ID of the provider associated with the appointment.
      * @param consumerId     The ID of the consumer associated with the appointment.
      */
-    public Appointment(TupleDateTime appointmentTime, String serviceType, long providerID, long consumerId) {
+    public Appointment(TupleDateTime appointmentTime, Service service, long providerID, long consumerId) {
         this.appointmentTime = appointmentTime;
-        this.serviceType = serviceType;
+        this.service = service;
         this.providerID = providerID;
         this.consumerId = consumerId;
     }
@@ -78,21 +76,21 @@ public class Appointment {
     }
 
     /**
-     * Getter for serviceType.
+     * Getter for service.
      *
      * @return The type of service for the appointment.
      */
-    public String getServiceType() {
-        return serviceType;
+    public Service getService() {
+        return service;
     }
 
     /**
-     * Setter for serviceType.
+     * Setter for service.
      *
-     * @param serviceType The type of service for the appointment to set.
+     * @param service The type of service for the appointment to set.
      */
-    public void setServiceType(String serviceType) {
-        this.serviceType = serviceType;
+    public void setService(Service service) {
+        this.service = service;
     }
 
     /**
