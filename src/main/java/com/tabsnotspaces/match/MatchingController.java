@@ -201,7 +201,7 @@ public class MatchingController {
 	@PostMapping("/client/{id}/consumerRequest")
 	public List<ServiceProvider> sortedProvidersResponse(@RequestBody ConsumerRequest consumerRequest) {
 		TupleDateTime requestedDate = consumerRequest.getRequestDate();
-		String requestedService = consumerRequest.getServiceType();
+		Service requestedService = consumerRequest.getServiceType();
 		Consumer consumer = new Consumer();
 		Optional<Consumer> cOpt = consumerRepository.findById(consumerRequest.getConsumerId());
 		if(cOpt.isPresent()) { // TODO return error otherwise
@@ -211,7 +211,7 @@ public class MatchingController {
 		List<ServiceProvider> availableProviders =
 				new ArrayList<ServiceProvider>(serviceProviderRepository.findByAvailabilities(requestedDate));
 		for (int i = 0; i < availableProviders.size(); i++) {
-			if (!(availableProviders.get(i).getServicesOffered().contains(requestedService))) {
+			if (!(availableProviders.get(i).getServices().contains(requestedService))) {
 				availableProviders.remove(availableProviders.get(i));
 			}
 		}
@@ -241,7 +241,7 @@ public class MatchingController {
 					ServiceProvider provider = providerOpt.get();
 
 					// check that service provider is available for appointment and service requested matches
-					if (!provider.getServicesOffered().contains(appointment.getServiceType())) {
+					if (!provider.getServices().contains(appointment.getService())) {
 						throw new RuntimeException("Service not available for this provider");
 					}
 					if (!provider.getAvailabilities().contains(appointment.getAppointmentTime())) {
