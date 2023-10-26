@@ -36,6 +36,9 @@ public class MatchingController {
 	@Autowired
 	AppointmentRepository appointmentRepository;
 
+	@Autowired
+	ReviewRepository reviewRepository;
+
 	/**
 	 * Retrieve a client by ID.
 	 *
