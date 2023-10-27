@@ -168,27 +168,63 @@ public class MatchingController {
 		return review;
 	}
 
-	/*
-	 * @PostMapping("/client/{id}/addAvailability") public String
-	 * serviceProviderAdd(@PathVariable Long id,
-	 * 
-	 * @RequestParam String providerId, // TODO change to long, for the REST API
-	 * 
-	 * @RequestParam String availableDate, Model model){ Optional<Client> clientOpt
-	 * = repository.findById(id); Client client = null; if(clientOpt.isPresent()) {
-	 * client = clientOpt.get(); Optional<ServiceProvider> sP =
-	 * serviceProviderRepository.findById(Long.parseLong(providerId)); // check if
-	 * service provider is present if(sP.isPresent()) { ServiceProvider
-	 * serviceProvider = sP.get(); SimpleDateFormat readingFormat = new
-	 * SimpleDateFormat(availableDate); serviceProvider.setAvailability(null);
-	 * 
-	 * serviceProviderRepository.save(serviceProvider); model.addAttribute("client",
-	 * client); return "redirect:/client/" + id; } // TODO report error otherwise
-	 * model.addAttribute("clients", repository.findAll()); return "clients"; }
-	 * 
-	 * // TODO report error otherwise model.addAttribute("clients",
-	 * repository.findAll()); return "clients"; }
-	 */	
+
+	@GetMapping("/client/{id}/getAvailability")
+	public List<TupleDateTime> getAvailability(@PathVariable Long id, @RequestParam Long providerId) {
+		Optional<Client> clientOpt = repository.findById(id);
+		Client client = null;
+		if (clientOpt.isPresent()) {
+			client = clientOpt.get();
+			Optional<ServiceProvider> sP = serviceProviderRepository.findById(providerId);
+			if (sP.isPresent()) {
+				ServiceProvider serviceProvider = sP.get();
+				List<TupleDateTime> currentAvailabilities = serviceProvider.getAvailabilities();
+				return currentAvailabilities;
+			}
+		}
+		return null;
+    }
+	
+	@PostMapping("/client/{id}/addAvailability")
+	public TupleDateTime addAvailability(@PathVariable Long id, @RequestParam Long providerId,
+										   @RequestBody TupleDateTime newAvailability) {
+		Optional<Client> clientOpt = repository.findById(id);
+		Client client = null;
+		if (clientOpt.isPresent()) {
+			client = clientOpt.get();
+			Optional<ServiceProvider> sP = serviceProviderRepository.findById(providerId);
+			if (sP.isPresent()) {
+				ServiceProvider serviceProvider = sP.get();
+				List<TupleDateTime> currentAvailabilities = serviceProvider.getAvailabilities();
+				currentAvailabilities.add(newAvailability);
+				serviceProviderRepository.save(serviceProvider); // is this necessary?
+			}
+		}
+		return newAvailability;
+    }
+
+	@DeleteMapping("/client/{id}/deleteAvailability")
+	public void deleteAvailability(@PathVariable Long id, @RequestParam Long providerId,
+			@RequestBody TupleDateTime expiredAvailability) {
+		Optional<Client> clientOpt = repository.findById(id);
+		Client client = null;
+		if (clientOpt.isPresent()) {
+			client = clientOpt.get();
+			Optional<ServiceProvider> sP = serviceProviderRepository.findById(providerId);
+			if (sP.isPresent()) {
+				ServiceProvider serviceProvider = sP.get();
+				List<TupleDateTime> currentAvailabilities = serviceProvider.getAvailabilities();
+				TupleDateTime removeAvailability = null;
+				for (TupleDateTime currentAvailability : currentAvailabilities) {
+					if(currentAvailability.getStartTime().equals(expiredAvailability.getStartTime())
+							&& currentAvailability.getEndTime().equals(expiredAvailability.getEndTime()))
+						removeAvailability = currentAvailability;
+				}
+				currentAvailabilities.remove(removeAvailability);
+				serviceProviderRepository.save(serviceProvider);
+			}
+		}
+	}
 	
 	//@PostMapping("/client/{id}/consumerRequest")
 	/**

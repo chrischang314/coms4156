@@ -58,7 +58,7 @@ public class Review {
         this.consumerId = consumerId;
     }
 
-    public void setReviewText(String review) {
+    public void setReviewText(String reviewText) {
         this.reviewText = reviewText;
     }
 

@@ -12,6 +12,12 @@ import java.time.LocalDateTime;
 public class TupleDateTime {
     private final LocalDateTime startTime;
     private final LocalDateTime endTime;
+    
+    public TupleDateTime() {
+        super();
+        this.startTime = null;
+        this.endTime = null;
+    }
 
     /**
      * Constructs a TupleDateTime object with a start time and an end time.
