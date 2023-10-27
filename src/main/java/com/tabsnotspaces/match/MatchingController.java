@@ -141,6 +141,44 @@ public class MatchingController {
 		return serviceProvider;
 	}
 
+	@PostMapping("/client/{id}/addAvailability")
+	public List<TupleDateTime> addAvailability(@PathVariable Long id, @RequestParam Long providerId,
+										   @RequestParam List<TupleDateTime> addOnAvailabilities) {
+		Optional<Client> clientOpt = repository.findById(id);
+		Client client = null;
+		if (clientOpt.isPresent()) {
+			client = clientOpt.get();
+			Optional<ServiceProvider> sP = serviceProviderRepository.findById(providerId);
+			if (sP.isPresent()) {
+				ServiceProvider serviceProvider = sP.get();
+				List<TupleDateTime> currentAvailabilities = serviceProvider.getAvailabilities();
+				currentAvailabilities.addAll(addOnAvailabilities);
+				serviceProviderRepository.save(serviceProvider); // is this necessary?
+				return currentAvailabilities;
+			}
+		}
+		return addOnAvailabilities;
+    }
+
+	@DeleteMapping("/client/{id}/deleteAvailability")
+	public void deleteAvailability(@PathVariable Long id, @RequestParam Long providerId,
+								   @RequestParam List<TupleDateTime> removeAvailabilities) {
+		Optional<Client> clientOpt = repository.findById(id);
+		Client client = null;
+		if (clientOpt.isPresent()) {
+			client = clientOpt.get();
+			Optional<ServiceProvider> sP = serviceProviderRepository.findById(providerId);
+			if (sP.isPresent()) {
+				ServiceProvider serviceProvider = sP.get();
+				List<TupleDateTime> currentAvailabilities = serviceProvider.getAvailabilities();
+				for (TupleDateTime removeAvailability : removeAvailabilities) {
+					currentAvailabilities.remove(removeAvailability);
+				}
+				serviceProviderRepository.save(serviceProvider);
+			}
+		}
+	}
+
 	/*
 	 * @PostMapping("/client/{id}/addAvailability") public String
 	 * serviceProviderAdd(@PathVariable Long id,
