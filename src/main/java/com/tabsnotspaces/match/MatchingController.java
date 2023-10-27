@@ -55,6 +55,7 @@ public class MatchingController {
 		// https://stackoverflow.com/questions/50904742/property-or-field-name-cannot-be-found-on-object-of-type-java-util-optional
 		return client;
 	}
+
 	
 	// https://stackoverflow.com/questions/57184276/the-method-findonelong-is-undefined-for-the-type-personrepository
 
@@ -82,6 +83,11 @@ public class MatchingController {
 		client.setClientName(name);
 		
 		return repository.save(client);
+	}
+
+	@GetMapping("/client{id}/review")
+	public List<Review> getReview (@PathVariable Long id) {
+		return (List<Review>) reviewRepository.findAll();
 	}
 
 	/**
@@ -142,6 +148,24 @@ public class MatchingController {
 		}
 
 		return serviceProvider;
+	}
+
+	@PostMapping("/client/{id}/addReview")
+	public Review reviewAdd(@PathVariable Long id, @RequestBody Review review) {
+		Optional<Client> clientOpt = repository.findById(id);
+		Client client = null;
+		if(clientOpt.isPresent()) { // TODO report error otherwise
+			client = clientOpt.get();
+			// TODO check if service provider is present
+
+			Review createdReview = reviewRepository.save(review);
+			client.getReviews().add(review);
+			repository.save(client);
+
+			return createdReview;
+		}
+
+		return review;
 	}
 
 	/*

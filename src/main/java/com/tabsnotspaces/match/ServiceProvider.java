@@ -14,6 +14,9 @@ public class ServiceProvider {
     private String providerName;
     private String address;
 
+    @ManyToMany
+    private List<Review> reviews;
+
     public String getAddress() {
         return address;
     }
@@ -211,4 +214,6 @@ public class ServiceProvider {
     public void setBookings(List<Appointment> bookings) {
         this.bookings = bookings;
     }
+
+    public List<Review> getReviews() { return reviews; }
 }

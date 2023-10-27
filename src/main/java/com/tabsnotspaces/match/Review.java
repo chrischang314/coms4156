@@ -1,5 +1,6 @@
 package com.tabsnotspaces.match;
 
+import com.google.api.client.util.DateTime;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,18 +16,18 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long reviewId;
     private int rating;
-    private String review;
-    private TupleDateTime reviewDateTime;
-    private long providerId;
+    private String reviewText;
+    private DateTime reviewDateTime;
+    private long serviceProviderId;
     private long consumerId;
 
     public Review(){ super(); }
 
-    public Review(int rating, String review, TupleDateTime reviewDateTime, long providerId, long consumerId) {
+    public Review(int rating, String reviewText, DateTime reviewDateTime, long serviceProviderId, long consumerId) {
         this.rating = rating;
-        this.review = review;
+        this.reviewText = reviewText;
         this.reviewDateTime = reviewDateTime;
-        this.providerId = providerId;
+        this.serviceProviderId = serviceProviderId;
         this.consumerId = consumerId;
     }
 
@@ -37,11 +38,11 @@ public class Review {
         return rating;
     }
 
-    public String getReview() {
-        return review;
+    public String getReviewText() {
+        return reviewText;
     }
 
-    public TupleDateTime getReviewDateTime() {
+    public DateTime getReviewDateTime() {
         return reviewDateTime;
     }
 
@@ -49,27 +50,27 @@ public class Review {
         return consumerId;
     }
 
-    public long getProviderId() {
-        return providerId;
+    public long getServiceProviderId() {
+        return serviceProviderId;
     }
 
     public void setConsumerId(long consumerId) {
         this.consumerId = consumerId;
     }
 
-    public void setReview(String review) {
-        this.review = review;
+    public void setReviewText(String review) {
+        this.reviewText = reviewText;
     }
 
-    public void setProviderId(long providerId) {
-        this.providerId = providerId;
+    public void setServiceProviderId(long serviceProviderId) {
+        this.serviceProviderId = serviceProviderId;
     }
 
     public void setReviewId(long reviewId) {
         this.reviewId = reviewId;
     }
 
-    public void setReviewDateTime(TupleDateTime reviewDateTime) {
+    public void setReviewDateTime(DateTime reviewDateTime) {
         this.reviewDateTime = reviewDateTime;
     }
 
