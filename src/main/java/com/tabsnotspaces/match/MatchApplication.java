@@ -28,6 +28,8 @@ public class MatchApplication {
 	@Autowired
 	ServiceRepository serviceRepository;
 
+	ReviewRepository reviewRepository;
+
 	/**
 	 * The main method to start the Spring Boot application.
 	 *

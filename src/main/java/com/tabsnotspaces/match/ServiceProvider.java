@@ -31,6 +31,9 @@ public class ServiceProvider {
     private String providerName;
     private String address;
 
+    @ManyToMany
+    private List<Review> reviews;
+
     public String getAddress() {
         return address;
     }
@@ -180,4 +183,8 @@ public class ServiceProvider {
     public void setClients(Set<Client> clients) {
         this.clients = clients;
     }
+
+
+    public List<Review> getReviews() { return reviews; }
 }
+

@@ -30,6 +30,9 @@ public class Client {
 	@ManyToMany
 	private List<ServiceProvider> serviceProviders;
 
+	@ManyToMany
+	private List<Review> reviews;
+
 	/**
 	 * Default constructor for the Client class.
 	 */
@@ -124,5 +127,9 @@ public class Client {
 
 	public void setServices(Set<Service> services) {
 		this.services = services;
+  }
+    
+	public List<Review> getReviews() {
+		return reviews;
 	}
 }
