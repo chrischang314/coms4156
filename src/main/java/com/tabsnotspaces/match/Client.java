@@ -26,6 +26,9 @@ public class Client {
 	private List<ServiceProvider> serviceProviders;
 	// TODO Services allowed
 
+	@ManyToMany
+	private List<Review> reviews;
+
 	/**
 	 * Default constructor for the Client class.
 	 */
@@ -105,5 +108,9 @@ public class Client {
 	 */
 	public void setServiceProviders(List<ServiceProvider> serviceProviders) {
 		this.serviceProviders = serviceProviders;
+	}
+
+	public List<Review> getReviews() {
+		return reviews;
 	}
 }

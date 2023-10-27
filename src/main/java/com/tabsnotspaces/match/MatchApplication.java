@@ -25,6 +25,9 @@ public class MatchApplication {
 	@Autowired
 	AppointmentRepository appointmentRepository;
 
+	@Autowired
+	ReviewRepository reviewRepository;
+
 	/**
 	 * The main method to start the Spring Boot application.
 	 *
