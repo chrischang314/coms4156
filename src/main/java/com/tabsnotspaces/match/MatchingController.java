@@ -154,9 +154,15 @@ public class MatchingController {
 	public Review reviewAdd(@PathVariable Long id, @RequestBody Review review) {
 		Optional<Client> clientOpt = repository.findById(id);
 		Client client = null;
+		ServiceProvider serviceProvider = null;
 		if(clientOpt.isPresent()) { // TODO report error otherwise
 			client = clientOpt.get();
-			// TODO check if service provider is present
+			Optional<ServiceProvider> providerOpt = serviceProviderRepository.findById(review.getServiceProviderId());
+			if (providerOpt.isPresent()) {
+				serviceProvider = providerOpt.get();
+				serviceProvider.getReviews().add(review);
+				updateAverage(serviceProvider);
+			}
 
 			Review createdReview = reviewRepository.save(review);
 			client.getReviews().add(review);
@@ -340,6 +346,21 @@ public class MatchingController {
 			client = clientOpt.get();
 			consumerRequestRepository.deleteById(consumerRequestId);
 		}
+	}
+
+	/**
+	 * Update a service provider's average rating.
+	 *
+	 * @param serviceProvider       The service provider to update.
+	 */
+	void updateAverage(ServiceProvider serviceProvider) {
+		int sum = 0;
+		List<Review> reviews = serviceProvider.getReviews();
+		for (Review review : reviews) {
+			sum += review.getRating();
+		}
+		long average = (sum/reviews.size());
+		serviceProvider.setAvgRating(average);
 	}
 }
 
