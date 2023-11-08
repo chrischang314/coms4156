@@ -28,6 +28,7 @@ public class MatchApplication {
 	@Autowired
 	ServiceRepository serviceRepository;
 
+	@Autowired
 	ReviewRepository reviewRepository;
 
 	/**

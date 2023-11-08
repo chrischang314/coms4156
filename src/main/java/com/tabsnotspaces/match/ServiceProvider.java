@@ -11,22 +11,10 @@ public class ServiceProvider {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+    private long parentClientId; // TODO define as a joint key?
 
-    @ManyToMany
-    @JoinTable(
-            name = "provider_service",
-            joinColumns = @JoinColumn(name = "provider_id"),
-            inverseJoinColumns = @JoinColumn(name = "service_id")
-    )
-    private Set<Service> services;
-
-    @ManyToMany
-    @JoinTable(
-            name = "client_provider",
-            joinColumns = @JoinColumn(name = "provider_id"),
-            inverseJoinColumns = @JoinColumn(name = "client_id")
-    )
-    private Set<Client> clients;
+    @OneToMany
+    private List<Service> services;
 
     private String providerName;
     private String address;
@@ -50,16 +38,15 @@ public class ServiceProvider {
         return location;
     }
 
-    public ServiceProvider(Set<Service> services, Set<Client> clients, String providerName, String address, List<Double> location, List<TupleDateTime> availabilities, long avgRating, List<Appointment> bookings) {
-        this.services = services;
-        this.clients = clients;
-        this.providerName = providerName;
-        this.address = address;
-        this.location = location;
-        this.availabilities = availabilities;
-        this.avgRating = avgRating;
-        this.bookings = bookings;
-    }
+//    public ServiceProvider(List<Service> services, String providerName, String address, List<Double> location, List<TupleDateTime> availabilities, long avgRating, List<Appointment> bookings) {
+//        this.services = services;
+//        this.providerName = providerName;
+//        this.address = address;
+//        this.location = location;
+//        this.availabilities = availabilities;
+//        this.avgRating = avgRating;
+//        this.bookings = bookings;
+//    }
 
     private List<Double> location;
     @ElementCollection
@@ -168,23 +155,22 @@ public class ServiceProvider {
         this.bookings = bookings;
     }
 
-    public Set<Service> getServices() {
+    public List<Service> getServices() {
         return services;
     }
 
-    public void setServices(Set<Service> services) {
+    public void setServices(List<Service> services) {
         this.services = services;
     }
 
-    public Set<Client> getClients() {
-        return clients;
-    }
-
-    public void setClients(Set<Client> clients) {
-        this.clients = clients;
-    }
-
-
     public List<Review> getReviews() { return reviews; }
+
+    public long getParentClientId() {
+        return parentClientId;
+    }
+
+    public void setParentClientId(long parentClientId) {
+        this.parentClientId = parentClientId;
+    }
 }
 

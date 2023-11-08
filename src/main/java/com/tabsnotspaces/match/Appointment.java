@@ -12,6 +12,7 @@ public class Appointment {
     private long appointmentId;
 
     private TupleDateTime appointmentTime;
+
     @ManyToOne
     private Service service;
     private long providerID; // TODO convert to entity type?

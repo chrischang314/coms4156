@@ -8,11 +8,19 @@ import java.util.Set;
 @Entity
 public class Service {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToMany(mappedBy = "services")
-    private Set<ServiceProvider> providers = new HashSet<>();
+    private String serviceName;
+    private long providerId;
+
+
+    /**
+     * Default constructor for ServiceProvider.
+     */
+    public Service() {
+        super();
+    }
 
     /**
      * get service id
@@ -34,15 +42,22 @@ public class Service {
      * Get providers of service
      * @return gives set of all the providers of service
      */
-    public Set<ServiceProvider> getProviders() {
-        return providers;
+    public long getProviderId() {
+        return providerId;
     }
 
     /**
      * Set service providers set for all the service providers
-     * @param providers
      */
-    public void setProviders(Set<ServiceProvider> providers) {
-        this.providers = providers;
+    public void setProviderId(long providerId) {
+        this.providerId = providerId;
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
     }
 }

@@ -16,6 +16,8 @@ public class ConsumerRequest {
 	//private LocalDateTime startTime;
 	//private LocalDateTime endTime; TODO restore these
 	private TupleDateTime requestDate;
+
+	@ManyToOne
 	private Service serviceType;
 	private long preferredProviderID; // TODO Convert to list
 
