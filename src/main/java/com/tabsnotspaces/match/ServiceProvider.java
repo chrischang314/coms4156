@@ -14,6 +14,8 @@ public class ServiceProvider {
     private String providerName;
     private String address;
 
+    @OneToMany
+    private List<Service> services;
     @ManyToMany
     private List<Review> reviews;
 
@@ -34,7 +36,6 @@ public class ServiceProvider {
     }
 
     private List<Double> location;
-    private List<String> servicesOffered; // TODO convert to an entity type serviceNum?
     @ElementCollection
     @CollectionTable(name = "service_provider_availabilities", joinColumns = @JoinColumn(name = "service_provider_id"))
     private List<TupleDateTime> availabilities;
@@ -49,17 +50,15 @@ public class ServiceProvider {
      * @param providerName   The name of the service provider.
      * @param address        The address of the service provider.
      * @param location       The location coordinates of the service provider.
-     * @param servicesOffered The list of services offered by the provider.
      * @param availabilities   The availabilities of the service provider.
      * @param avgRating        The average rating of the service provider.
      * @param bookings         The list of appointments booked with the service provider.
      */
-    public ServiceProvider(long parentClientId, String providerName, String address, List<Double> location, List<String> servicesOffered, List<TupleDateTime> availabilities, long avgRating, List<Appointment> bookings) {
+    public ServiceProvider(long parentClientId, String providerName, String address, List<Double> location, List<TupleDateTime> availabilities, long avgRating, List<Appointment> bookings) {
         this.parentClientId = parentClientId;
         this.providerName = providerName;
         this.address = address;
         this.location = location;
-        this.servicesOffered = servicesOffered;
         this.availabilities = availabilities;
         this.avgRating = avgRating;
         this.bookings = bookings;
@@ -155,22 +154,13 @@ public class ServiceProvider {
         providerName = name;
     }
 
-    /**
-     * Get the list of services offered by the provider.
-     *
-     * @return The list of services offered by the provider.
-     */
-    public List<String> getServicesOffered() {
-        return servicesOffered;
+
+    public List<Service> getServices() {
+        return services;
     }
 
-    /**
-     * Set the list of services offered by the provider.
-     *
-     * @param servicesOffered The list of services offered by the provider.
-     */
-    public void setServicesOffered(List<String> servicesOffered) {
-        this.servicesOffered = servicesOffered;
+    public void setServices(List<Service> services) {
+        this.services = services;
     }
 
     /*

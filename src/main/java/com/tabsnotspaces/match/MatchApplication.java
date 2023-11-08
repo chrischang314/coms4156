@@ -18,6 +18,9 @@ public class MatchApplication {
 	
 	@Autowired
 	ServiceProviderRepository serviceProviderRepository;
+
+	@Autowired
+	ServiceRepository serviceRepository;
 	
 	@Autowired
 	ConsumerRequestRepository consumerRequestRepository;

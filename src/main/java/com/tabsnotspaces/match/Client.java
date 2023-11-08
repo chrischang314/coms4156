@@ -1,6 +1,7 @@
 package com.tabsnotspaces.match;
 
 import java.util.List;
+import java.util.Optional;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -112,5 +113,10 @@ public class Client {
 
 	public List<Review> getReviews() {
 		return reviews;
+	}
+
+	public ServiceProvider getServiceProvider(long serviceProviderId){
+		Optional<ServiceProvider> serviceProviderOptional = serviceProviders.stream().filter(x -> x.getId() == serviceProviderId).findFirst();
+		return serviceProviderOptional.isEmpty() ? null : serviceProviderOptional.get();
 	}
 }

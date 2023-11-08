@@ -29,6 +29,9 @@ public class MatchingController {
 	
 	@Autowired
 	ServiceProviderRepository serviceProviderRepository;
+
+	@Autowired
+	ServiceRepository serviceRepository;
 	
 	@Autowired
 	ConsumerRequestRepository consumerRequestRepository;
@@ -148,6 +151,33 @@ public class MatchingController {
 		}
 
 		return serviceProvider;
+	}
+
+	/**
+	 * Add a new service provider to a client.
+	 *
+	 * @param id      The ID of the client.
+	 * @param service The new service provider to add.
+	 * @return The newly created service provider.
+	 */
+	@PostMapping("/client/{id}/service")
+	public Service serviceAdd(@PathVariable Long id, @RequestBody Service service) {
+		Optional<Client> clientOpt = repository.findById(id);
+		Client client = null;
+		if (clientOpt.isPresent()) { // TODO report error otherwise
+			client = clientOpt.get();
+			// TODO check if service provider is present
+			Service createdService = serviceRepository.save(service);
+			ServiceProvider serviceProvider = client.getServiceProvider(service.getProviderId());
+			if (serviceProvider != null) {
+				serviceProvider.getServices().add(service);
+			}
+			repository.save(client);
+
+			return createdService;
+		}
+
+		return service;
 	}
 
 	@PostMapping("/client/{id}/addReview")
@@ -270,7 +300,7 @@ public class MatchingController {
 	@PostMapping("/client/{id}/consumerRequest")
 	public List<ServiceProvider> sortedProvidersResponse(@RequestBody ConsumerRequest consumerRequest) {
 		TupleDateTime requestedDate = consumerRequest.getRequestDate();
-		String requestedService = consumerRequest.getServiceType();
+		Service requestedService = consumerRequest.getServiceType();
 		Consumer consumer = new Consumer();
 		Optional<Consumer> cOpt = consumerRepository.findById(consumerRequest.getConsumerId());
 		if(cOpt.isPresent()) { // TODO return error otherwise
@@ -280,7 +310,7 @@ public class MatchingController {
 		List<ServiceProvider> availableProviders =
 				new ArrayList<ServiceProvider>(serviceProviderRepository.findByAvailabilities(requestedDate));
 		for (int i = 0; i < availableProviders.size(); i++) {
-			if (!(availableProviders.get(i).getServicesOffered().contains(requestedService))) {
+			if (!(availableProviders.get(i).getServices().contains(requestedService))) {
 				availableProviders.remove(availableProviders.get(i));
 			}
 		}
@@ -310,7 +340,7 @@ public class MatchingController {
 					ServiceProvider provider = providerOpt.get();
 
 					// check that service provider is available for appointment and service requested matches
-					if (!provider.getServicesOffered().contains(appointment.getServiceType())) {
+					if (!provider.getServices().contains(appointment.getServiceType())) {
 						throw new RuntimeException("Service not available for this provider");
 					}
 					if (!provider.getAvailabilities().contains(appointment.getAppointmentTime())) {

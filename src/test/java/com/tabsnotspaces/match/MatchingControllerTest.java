@@ -156,9 +156,14 @@ class MatchingControllerTest {
         providerLocation.add(40.7128);
         providerLocation.add(-74.0060);
 
-        ArrayList<String> providerServices = new ArrayList<String>();
-        providerServices.add("Healthcare");
-        serviceProvider.setServicesOffered(providerServices);
+        ArrayList<Service> providerServices = new ArrayList<Service>();
+//        providerServices.add("Healthcare");
+        Service service = new Service();
+        service.setId(1L);
+        service.setServiceName("Healthcare");
+        service.setProviderId(serviceProvider.getId());
+        providerServices.add(service);
+        serviceProvider.setServices(providerServices);
         serviceProvider.setLocation(providerLocation);
 
         ArrayList<TupleDateTime> providerAvailabilities = new ArrayList<TupleDateTime>();
@@ -174,7 +179,8 @@ class MatchingControllerTest {
         consumerRequest.setConsumerId(1);
         consumerRequest.setPreferredProviderID(1L);
         consumerRequest.setRequestId(3L);
-        consumerRequest.setServiceType("Healthcare");
+//        consumerRequest.setServiceType("Healthcare");
+        consumerRequest.setServiceType(service);
         when(consumerRequestRepository.save(consumerRequest)).thenReturn(consumerRequest);
 
         List<ServiceProvider> expectedList = new ArrayList<>();
@@ -291,9 +297,14 @@ class MatchingControllerTest {
         providerLocation.add(40.7128);
         providerLocation.add(-74.0060);
 
-        ArrayList<String> providerServices = new ArrayList<String>();
-        providerServices.add("Healthcare");
-        serviceProvider.setServicesOffered(providerServices);
+        ArrayList<Service> providerServices = new ArrayList<Service>();
+//        providerServices.add("Healthcare");
+        Service service = new Service();
+        service.setId(1L);
+        service.setServiceName("Healthcare");
+        service.setProviderId(serviceProvider.getId());
+        providerServices.add(service);
+        serviceProvider.setServices(providerServices);
         serviceProvider.setLocation(providerLocation);
 
         ArrayList<TupleDateTime> providerAvailabilities = new ArrayList<TupleDateTime>();
@@ -309,7 +320,8 @@ class MatchingControllerTest {
         consumerRequest.setConsumerId(1);
         consumerRequest.setPreferredProviderID(1L);
         consumerRequest.setRequestId(3L);
-        consumerRequest.setServiceType("Healthcare");
+//        consumerRequest.setServiceType("Healthcare");
+        consumerRequest.setServiceType(service);
         matchingController.deleteConsumerRequest(1L, 1L);
         verify(consumerRequestRepository, times(1)).delete(consumerRequest);
     }
