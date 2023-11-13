@@ -4,6 +4,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class Service {
@@ -11,7 +14,11 @@ public class Service {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotNull(message = "service name should not be null")
+    @NotEmpty(message = "service name should not be empty")
     private String serviceName;
+
+    @Min(value = 1, message = "provider id should be greater than 0")
     private long providerId;
 
 
@@ -24,6 +31,7 @@ public class Service {
 
     /**
      * get service id
+     *
      * @return id of service
      */
     public Long getId() {
@@ -32,6 +40,7 @@ public class Service {
 
     /**
      * Set id for service
+     *
      * @param id value to be set for service
      */
     public void setId(Long id) {
@@ -40,6 +49,7 @@ public class Service {
 
     /**
      * Get providers of service
+     *
      * @return gives set of all the providers of service
      */
     public long getProviderId() {

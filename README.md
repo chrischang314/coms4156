@@ -1,6 +1,7 @@
 # Match Application API Documentation
 
-The Match Application is a project that provides a platform for scheduling appointments between clients and service providers. This README provides an overview of the available APIs and their usage.
+The Match Application is a project that provides a platform for scheduling appointments between clients and service
+providers. This README provides an overview of the available APIs and their usage.
 
 ## Table of Contents
 
@@ -37,7 +38,8 @@ The Match Application provides the following API endpoints:
 
 ## API Usage
 
-Detailed API usage instructions and request/response examples can be found in the source code of the project. Please refer to the codebase for specific usage details.
+Detailed API usage instructions and request/response examples can be found in the source code of the project. Please
+refer to the codebase for specific usage details.
 
 ## Data Models
 
@@ -52,8 +54,9 @@ The Match Application uses the following data models:
 
 ## Getting Started
 
-Prerequisites: 
-Before you run the Match Application, since we are using a Cloud SQL server to handle persistent data, you will need the Google Cloud CLI and MySQL installed on your laptop. 
+Prerequisites:
+Before you run the Match Application, since we are using a Cloud SQL server to handle persistent data, you will need the
+Google Cloud CLI and MySQL installed on your laptop.
 
 To run the Match Application, follow these steps:
 
@@ -63,5 +66,7 @@ To run the Match Application, follow these steps:
 4. Access the APIs using the provided endpoints.
 
 ## Testing Resource
-The link to the Postman Collection with some start API's can be found [here](https://app.getpostman.com/join-team?invite_code=409679a1dec844deadebd4a22f3c5acd&target_code=a92949bc4a1ae5d66291956ecbb26cf5).
+
+The link to the Postman Collection with some start API's can be
+found [here](https://app.getpostman.com/join-team?invite_code=409679a1dec844deadebd4a22f3c5acd&target_code=a92949bc4a1ae5d66291956ecbb26cf5).
 A video of API testing via Postman can be seen [here](https://www.youtube.com/watch?v=fzW7lfTNeZs).

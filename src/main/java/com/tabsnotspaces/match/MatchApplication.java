@@ -9,35 +9,35 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication
 public class MatchApplication {
-	
-	@Autowired
-	ClientRepository repository;
-	
-	@Autowired
-	ConsumerRepository consumerRepository;
-	
-	@Autowired
-	ServiceProviderRepository serviceProviderRepository;
 
-	@Autowired
-	ServiceRepository serviceRepository;
-	
-	@Autowired
-	ConsumerRequestRepository consumerRequestRepository;
-	
-	@Autowired
-	AppointmentRepository appointmentRepository;
+    @Autowired
+    ClientRepository repository;
 
-	@Autowired
-	ReviewRepository reviewRepository;
+    @Autowired
+    ConsumerRepository consumerRepository;
 
-	/**
-	 * The main method to start the Spring Boot application.
-	 *
-	 * @param args Command-line arguments.
-	 */
-	public static void main(String[] args) {
-		SpringApplication.run(MatchApplication.class, args);
-	}
+    @Autowired
+    ServiceProviderRepository serviceProviderRepository;
+
+    @Autowired
+    ServiceRepository serviceRepository;
+
+    @Autowired
+    ConsumerRequestRepository consumerRequestRepository;
+
+    @Autowired
+    AppointmentRepository appointmentRepository;
+
+    @Autowired
+    ReviewRepository reviewRepository;
+
+    /**
+     * The main method to start the Spring Boot application.
+     *
+     * @param args Command-line arguments.
+     */
+    public static void main(String[] args) {
+        SpringApplication.run(MatchApplication.class, args);
+    }
 
 }
