@@ -115,7 +115,7 @@ public class MatchingController {
 		if(clientOpt.isPresent()) { // TODO report error otherwise
 			client = clientOpt.get();
 			// TODO check if consumer is present
-			
+			consumer.setParentClientId(id);
 			Consumer createdConsumer = consumerRepository.save(consumer);
 			client.getConsumers().add(consumer);
 			repository.save(client);
@@ -139,7 +139,8 @@ public class MatchingController {
 		Client client = null;
 		if(clientOpt.isPresent()) { // TODO report error otherwise
 			client = clientOpt.get();
-			// TODO check if service provider is present			
+			// TODO check if service provider is present
+			serviceProvider.setParentClientId(id);
 			ServiceProvider createdServiceProvider = serviceProviderRepository.save(serviceProvider);
 			client.getServiceProviders().add(serviceProvider);
 			repository.save(client);
