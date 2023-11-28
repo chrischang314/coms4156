@@ -4,6 +4,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * This class represents an Appointment entity.
@@ -14,9 +17,18 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long appointmentId;
 
+    @NotNull(message = "appointment time should not be null")
+    @NotEmpty(message = "appointment time should not be empty")
     private TupleDateTime appointmentTime;
+
+    @NotNull(message = "service type should not be null")
+    @NotEmpty(message = "service type should not be empty")
     private String serviceType;
+
+    @Min(value = 1, message = "provider id should be greater than 0")
     private long providerID; // TODO convert to entity type?
+
+    @Min(value = 1, message = "consumer id should be greater than 0")
     private long consumerId;
 
     /**
@@ -30,9 +42,9 @@ public class Appointment {
      * Parameterized constructor for the Appointment class.
      *
      * @param appointmentTime The date and time of the appointment.
-     * @param serviceType    The type of service for the appointment.
-     * @param providerID     The ID of the provider associated with the appointment.
-     * @param consumerId     The ID of the consumer associated with the appointment.
+     * @param serviceType     The type of service for the appointment.
+     * @param providerID      The ID of the provider associated with the appointment.
+     * @param consumerId      The ID of the consumer associated with the appointment.
      */
     public Appointment(TupleDateTime appointmentTime, String serviceType, long providerID, long consumerId) {
         this.appointmentTime = appointmentTime;

@@ -1,12 +1,11 @@
 package com.tabsnotspaces.match;
 
-import java.util.List;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * This class represents a Client entity.
@@ -15,102 +14,112 @@ import jakarta.persistence.ManyToMany;
 @Entity
 public class Client {
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	private long clientId;
-	private String clientName;
-	@ManyToMany
-	private List<Consumer> consumers;
-	// AddConsumer function - check service type to belong to a limited set
-	@ManyToMany
-	private List<ServiceProvider> serviceProviders;
-	// TODO Services allowed
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long clientId;
 
-	@ManyToMany
-	private List<Review> reviews;
+    @NotNull(message = "client name should not be null")
+    @NotEmpty(message = "client name should not be empty")
+    @Column(unique = true)
+    private String clientName;
 
-	/**
-	 * Default constructor for the Client class.
-	 */
-	public Client() {
-		super();
-	}
-	// https://stackoverflow.com/questions/57369016/el1008e-property-or-field-username-cannot-be-found-on-object-of-type-userhttps://stackoverflow.com/questions/57369016/el1008e-property-or-field-username-cannot-be-found-on-object-of-type-user
+    @ManyToMany
+    private List<Consumer> consumers;
+    // AddConsumer function - check service type to belong to a limited set
+    @ManyToMany
+    private List<ServiceProvider> serviceProviders;
+    // TODO Services allowed
 
-	/**
-	 * Getter for clientId.
-	 *
-	 * @return The client ID.
-	 */
-	public long getClientId() {
-		return clientId;
-	}
+    @ManyToMany
+    private List<Review> reviews;
 
-	/**
-	 * Setter for clientId.
-	 *
-	 * @param id The client ID to set.
-	 */
-	public void setClientId(long id) {
-		clientId = id;
-	}
+    /**
+     * Default constructor for the Client class.
+     */
+    public Client() {
+        super();
+    }
+    // https://stackoverflow.com/questions/57369016/el1008e-property-or-field-username-cannot-be-found-on-object-of-type-userhttps://stackoverflow.com/questions/57369016/el1008e-property-or-field-username-cannot-be-found-on-object-of-type-user
 
-	/**
-	 * Getter for clientName.
-	 *
-	 * @return The name of the client.
-	 */
-	public String getClientName() {
-		return clientName;
-	}
+    /**
+     * Getter for clientId.
+     *
+     * @return The client ID.
+     */
+    public long getClientId() {
+        return clientId;
+    }
 
-	/**
-	 * Setter for clientName.
-	 *
-	 * @param name The name of the client to set.
-	 */
+    /**
+     * Setter for clientId.
+     *
+     * @param id The client ID to set.
+     */
+    public void setClientId(long id) {
+        clientId = id;
+    }
 
-	public void setClientName(String name) {
-		clientName = name;
-	}
+    /**
+     * Getter for clientName.
+     *
+     * @return The name of the client.
+     */
+    public String getClientName() {
+        return clientName;
+    }
 
-	/**
-	 * Getter for consumers.
-	 *
-	 * @return The list of consumers associated with the client.
-	 */
-	public List<Consumer> getConsumers() {
-		return consumers;
-	}
+    /**
+     * Setter for clientName.
+     *
+     * @param name The name of the client to set.
+     */
 
-	/**
-	 * Setter for consumers.
-	 *
-	 * @param consumers The list of consumers to set.
-	 */
-	public void setConsumers(List<Consumer> consumers) {
-		this.consumers = consumers;
-	}
+    public void setClientName(String name) {
+        clientName = name;
+    }
 
-	/**
-	 * Getter for serviceProviders.
-	 *
-	 * @return The list of service providers associated with the client.
-	 */
-	public List<ServiceProvider> getServiceProviders() {
-		return serviceProviders;
-	}
+    /**
+     * Getter for consumers.
+     *
+     * @return The list of consumers associated with the client.
+     */
+    public List<Consumer> getConsumers() {
+        return consumers;
+    }
 
-	/**
-	 * Setter for serviceProviders.
-	 *
-	 * @param serviceProviders The list of service providers to set.
-	 */
-	public void setServiceProviders(List<ServiceProvider> serviceProviders) {
-		this.serviceProviders = serviceProviders;
-	}
+    /**
+     * Setter for consumers.
+     *
+     * @param consumers The list of consumers to set.
+     */
+    public void setConsumers(List<Consumer> consumers) {
+        this.consumers = consumers;
+    }
 
-	public List<Review> getReviews() {
-		return reviews;
-	}
+    /**
+     * Getter for serviceProviders.
+     *
+     * @return The list of service providers associated with the client.
+     */
+    public List<ServiceProvider> getServiceProviders() {
+        return serviceProviders;
+    }
+
+    /**
+     * Setter for serviceProviders.
+     *
+     * @param serviceProviders The list of service providers to set.
+     */
+    public void setServiceProviders(List<ServiceProvider> serviceProviders) {
+        this.serviceProviders = serviceProviders;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public ServiceProvider getServiceProvider(long serviceProviderId) {
+        Optional<ServiceProvider> serviceProviderOptional = serviceProviders.stream().filter(x -> x.getId() == serviceProviderId).findFirst();
+        return serviceProviderOptional.isEmpty() ? null : serviceProviderOptional.get();
+    }
 }

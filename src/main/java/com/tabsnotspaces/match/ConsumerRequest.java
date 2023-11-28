@@ -1,152 +1,161 @@
 package com.tabsnotspaces.match;
 
-import java.util.Date;
-
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * This class represents a ConsumerRequest entity.
  */
 @Entity
 public class ConsumerRequest {
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	private long requestId;
-	private long consumerId;
-	//private LocalDateTime startTime;
-	//private LocalDateTime endTime; TODO restore these
-	private TupleDateTime requestDate;
-	private String serviceType;
-	private long preferredProviderID; // TODO Convert to list
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long requestId;
 
-	/**
-	 * Default constructor for the ConsumerRequest class.
-	 */
+    @Min(value = 1, message = "consumer id should be greater than 0")
+    private long consumerId;
+    //private LocalDateTime startTime;
+    //private LocalDateTime endTime; TODO restore these
+    @NotNull(message = "request date time should not be null")
+    @NotEmpty(message = "request date time should not be empty")
+    private TupleDateTime requestDate;
 
-	public ConsumerRequest() {
-		super();
-	}
+    @ManyToOne
+    private Service serviceType;
 
-	/**
-	 * Parameterized constructor for the ConsumerRequest class.
-	 *
-	 * @param requestDate          The date and time of the request.
-	 * @param serviceType          The type of service requested.
-	 * @param preferredProviderID  The ID of the preferred service provider.
-	 */
-	public ConsumerRequest(TupleDateTime requestDate,
-			String serviceType,
-			long preferredProviderID) {
-		this.requestDate = requestDate;
-		this.serviceType = serviceType;
-		this.preferredProviderID = preferredProviderID;
-	}
+    @Min(value = 1, message = "provider id should be greater than 0")
+    private long preferredProviderID; // TODO Convert to list
 
-	/*
-	 * public ConsumerRequest(LocalDateTime startTime, LocalDateTime endTime, String
-	 * serviceType, long preferredProviderID) { this.startTime = startTime;
-	 * this.endTime = endTime; this.serviceType = serviceType;
-	 * this.preferredProviderID = preferredProviderID; }
-	 */
+    /**
+     * Default constructor for the ConsumerRequest class.
+     */
 
-	/**
-	 * Getter for requestId.
-	 *
-	 * @return The request ID.
-	 */
-	public long getRequestId() {
-		return requestId;
-	}
+    public ConsumerRequest() {
+        super();
+    }
 
-	/**
-	 * Setter for requestId.
-	 *
-	 * @param id The request ID to set.
-	 */
-	public void setRequestId(long id) {
-		requestId = id;
-	}
+    /**
+     * Parameterized constructor for the ConsumerRequest class.
+     *
+     * @param requestDate         The date and time of the request.
+     * @param serviceType         The type of service requested.
+     * @param preferredProviderID The ID of the preferred service provider.
+     */
+    public ConsumerRequest(TupleDateTime requestDate,
+                           Service serviceType,
+                           long preferredProviderID) {
+        this.requestDate = requestDate;
+        this.serviceType = serviceType;
+        this.preferredProviderID = preferredProviderID;
+    }
 
-	/**
-	 * Getter for consumerId.
-	 *
-	 * @return The ID of the consumer associated with the request.
-	 */
-	public long getConsumerId() {
-		return consumerId;
-	}
+    /*
+     * public ConsumerRequest(LocalDateTime startTime, LocalDateTime endTime, String
+     * serviceType, long preferredProviderID) { this.startTime = startTime;
+     * this.endTime = endTime; this.serviceType = serviceType;
+     * this.preferredProviderID = preferredProviderID; }
+     */
 
-	/**
-	 * Setter for consumerId.
-	 *
-	 * @param id The ID of the consumer to set.
-	 */
-	public void setConsumerId(long id) {
-		consumerId = id;
-	}
+    /**
+     * Getter for requestId.
+     *
+     * @return The request ID.
+     */
+    public long getRequestId() {
+        return requestId;
+    }
 
-	/*
-	 * public LocalDateTime getStartTime() { return startTime; }
-	 *
-	 * public void setStartTime(LocalDateTime startTime) { this.startTime =
-	 * startTime; }
-	 *
-	 * public LocalDateTime getEndTime() { return endTime; }
-	 *
-	 * public void setEndTime(LocalDateTime endTime) { this.endTime = endTime; }
-	 */
+    /**
+     * Setter for requestId.
+     *
+     * @param id The request ID to set.
+     */
+    public void setRequestId(long id) {
+        requestId = id;
+    }
 
-	/**
-	 * Getter for requestDate.
-	 *
-	 * @return The date and time of the request.
-	 */
-	public TupleDateTime getRequestDate() {
-		return requestDate;
-	}
+    /**
+     * Getter for consumerId.
+     *
+     * @return The ID of the consumer associated with the request.
+     */
+    public long getConsumerId() {
+        return consumerId;
+    }
 
-	/**
-	 * Setter for requestDate.
-	 *
-	 * @param requestDate The date and time of the request to set.
-	 */
-	public void setRequestDate(TupleDateTime requestDate) {
-		this.requestDate = requestDate;
-	}
+    /**
+     * Setter for consumerId.
+     *
+     * @param id The ID of the consumer to set.
+     */
+    public void setConsumerId(long id) {
+        consumerId = id;
+    }
 
-	/**
-	 * Getter for serviceType.
-	 *
-	 * @return The type of service requested.
-	 */
-	public String getServiceType() {
-		return serviceType;
-	}
+    /*
+     * public LocalDateTime getStartTime() { return startTime; }
+     *
+     * public void setStartTime(LocalDateTime startTime) { this.startTime =
+     * startTime; }
+     *
+     * public LocalDateTime getEndTime() { return endTime; }
+     *
+     * public void setEndTime(LocalDateTime endTime) { this.endTime = endTime; }
+     */
 
-	/**
-	 * Setter for serviceType.
-	 *
-	 * @param serviceType The type of service to set.
-	 */
-	public void setServiceType(String serviceType) {
-		this.serviceType = serviceType;
-	}
+    /**
+     * Getter for requestDate.
+     *
+     * @return The date and time of the request.
+     */
+    public TupleDateTime getRequestDate() {
+        return requestDate;
+    }
 
-	/**
-	 * Getter for preferredProviderID.
-	 *
-	 * @return The ID of the preferred service provider.
-	 */
-	public long getPreferredProviderID() {
-		return preferredProviderID;
-	}
+    /**
+     * Setter for requestDate.
+     *
+     * @param requestDate The date and time of the request to set.
+     */
+    public void setRequestDate(TupleDateTime requestDate) {
+        this.requestDate = requestDate;
+    }
 
-	/**
-	 * Setter for preferredProviderID.
-	 *
-	 * @param preferredProviderID The ID of the preferred service provider to set.
-	 */
-	public void setPreferredProviderID(long preferredProviderID) {
-		this.preferredProviderID = preferredProviderID;
-	}
+    /**
+     * Getter for serviceType.
+     *
+     * @return The type of service requested.
+     */
+    public Service getServiceType() {
+        return serviceType;
+    }
+
+    /**
+     * Setter for serviceType.
+     *
+     * @param serviceType The type of service to set.
+     */
+    public void setServiceType(Service serviceType) {
+        this.serviceType = serviceType;
+    }
+
+    /**
+     * Getter for preferredProviderID.
+     *
+     * @return The ID of the preferred service provider.
+     */
+    public long getPreferredProviderID() {
+        return preferredProviderID;
+    }
+
+    /**
+     * Setter for preferredProviderID.
+     *
+     * @param preferredProviderID The ID of the preferred service provider to set.
+     */
+    public void setPreferredProviderID(long preferredProviderID) {
+        this.preferredProviderID = preferredProviderID;
+    }
 }

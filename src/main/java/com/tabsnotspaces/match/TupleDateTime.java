@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class TupleDateTime {
     private final LocalDateTime startTime;
     private final LocalDateTime endTime;
-    
+
     public TupleDateTime() {
         super();
         this.startTime = null;

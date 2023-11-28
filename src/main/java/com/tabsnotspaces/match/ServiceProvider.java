@@ -1,6 +1,8 @@
 package com.tabsnotspaces.match;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
@@ -10,35 +12,35 @@ public class ServiceProvider {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+
+    //    @Min(value = 1, message = "client id should be greater than 0")
     private long parentClientId; // TODO define as a joint key?
+
+    @NotNull(message = "provider name should not be null")
+    @NotEmpty(message = "provider name should not be empty")
+    @Column(unique = true)
     private String providerName;
+
+    @NotNull(message = "address should not be null")
+    @NotEmpty(message = "address should not be empty")
     private String address;
 
-    @ManyToMany
-    private List<Review> reviews;
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public void setLocation(List<Double> location) {
-        this.location = location;
-    }
-
-    public List<Double> getLocation() {
-        return location;
-    }
-
+    @NotNull(message = "location should not be null")
+    @NotEmpty(message = "location should not be empty")
     private List<Double> location;
-    private List<String> servicesOffered; // TODO convert to an entity type serviceNum?
+
+    @NotNull(message = "availabilities should not be null")
+    @NotEmpty(message = "availabilities should not be empty")
     @ElementCollection
     @CollectionTable(name = "service_provider_availabilities", joinColumns = @JoinColumn(name = "service_provider_id"))
     private List<TupleDateTime> availabilities;
+
     private long avgRating;
+
+    @OneToMany
+    private List<Service> services;
+    @ManyToMany
+    private List<Review> reviews;
     @ManyToMany
     private List<Appointment> bookings;
 
@@ -49,17 +51,15 @@ public class ServiceProvider {
      * @param providerName   The name of the service provider.
      * @param address        The address of the service provider.
      * @param location       The location coordinates of the service provider.
-     * @param servicesOffered The list of services offered by the provider.
-     * @param availabilities   The availabilities of the service provider.
-     * @param avgRating        The average rating of the service provider.
-     * @param bookings         The list of appointments booked with the service provider.
+     * @param availabilities The availabilities of the service provider.
+     * @param avgRating      The average rating of the service provider.
+     * @param bookings       The list of appointments booked with the service provider.
      */
-    public ServiceProvider(long parentClientId, String providerName, String address, List<Double> location, List<String> servicesOffered, List<TupleDateTime> availabilities, long avgRating, List<Appointment> bookings) {
+    public ServiceProvider(long parentClientId, String providerName, String address, List<Double> location, List<TupleDateTime> availabilities, long avgRating, List<Appointment> bookings) {
         this.parentClientId = parentClientId;
         this.providerName = providerName;
         this.address = address;
         this.location = location;
-        this.servicesOffered = servicesOffered;
         this.availabilities = availabilities;
         this.avgRating = avgRating;
         this.bookings = bookings;
@@ -80,6 +80,22 @@ public class ServiceProvider {
     public ServiceProvider(long parentClientId) {
         super();
         this.parentClientId = parentClientId;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public List<Double> getLocation() {
+        return location;
+    }
+
+    public void setLocation(List<Double> location) {
+        this.location = location;
     }
 
     /**
@@ -155,22 +171,13 @@ public class ServiceProvider {
         providerName = name;
     }
 
-    /**
-     * Get the list of services offered by the provider.
-     *
-     * @return The list of services offered by the provider.
-     */
-    public List<String> getServicesOffered() {
-        return servicesOffered;
+
+    public List<Service> getServices() {
+        return services;
     }
 
-    /**
-     * Set the list of services offered by the provider.
-     *
-     * @param servicesOffered The list of services offered by the provider.
-     */
-    public void setServicesOffered(List<String> servicesOffered) {
-        this.servicesOffered = servicesOffered;
+    public void setServices(List<Service> services) {
+        this.services = services;
     }
 
     /*
@@ -179,6 +186,7 @@ public class ServiceProvider {
      * public void setAvailability(List<LocalDateTime> availability) {
      * this.availability = availability; }
      */
+
     /**
      * Get the average rating of the service provider.
      *
@@ -215,5 +223,7 @@ public class ServiceProvider {
         this.bookings = bookings;
     }
 
-    public List<Review> getReviews() { return reviews; }
+    public List<Review> getReviews() {
+        return reviews;
+    }
 }

@@ -1,33 +1,24 @@
 package com.tabsnotspaces.match;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import static org.mockito.Mockito.when;
-
-import java.time.LocalDateTime;
-import java.util.*;
-
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.times;
+import org.mockito.Mockito;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.mockito.CheckReturnValue;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
+
 //@RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -72,15 +63,13 @@ class MatchingControllerTest {
 
     @Test
     void clientsAddTest() {
-        ClientRepository clientRepository = Mockito.mock(ClientRepository.class);
-        Model model = Mockito.mock(Model.class);
-
         Client client = new Client();
         client.setClientId(1);
         client.setClientName("Client1");
         String name = "Client1";
         when(clientRepository.save(client)).thenReturn(client);
-        Client result = matchingController.clientsAdd("Client1", model);
+        ResponseEntity<Object> responseEntity = matchingController.clientsAdd(client);
+        Client result = (Client) responseEntity.getBody();
         assertEquals(result.getClientName(), name);
     }
 
@@ -104,7 +93,8 @@ class MatchingControllerTest {
         consumer.setParentClientId(1);
         consumer.setAppointments(new ArrayList<Appointment>());
         when(consumerRepository.save(consumer)).thenReturn(consumer);
-        Consumer result = matchingController.consumerAdd(1L, consumer);
+        ResponseEntity responseEntity = matchingController.consumerAdd(1L, consumer);
+        Consumer result = (Consumer) responseEntity.getBody();
         assertEquals(result, consumer);
     }
 
@@ -123,7 +113,8 @@ class MatchingControllerTest {
         serviceProvider.setId(1);
         serviceProvider.setParentClientId(1);
         when(serviceProviderRepository.save(serviceProvider)).thenReturn(serviceProvider);
-        ServiceProvider result = matchingController.serviceProviderAdd(1L, serviceProvider);
+        ResponseEntity responseEntity = matchingController.serviceProviderAdd(1L, serviceProvider);
+        ServiceProvider result = (ServiceProvider) responseEntity.getBody();
         assertEquals(result, serviceProvider);
     }
 
@@ -135,7 +126,7 @@ class MatchingControllerTest {
         client.setClientId(2);
         client.setClientName("Client2");
         String name = "Client2";
-        matchingController.clientsAdd("Client2", model);
+        matchingController.clientsAdd(client);
 
         ConsumerRepository consumerRepository = Mockito.mock(ConsumerRepository.class);
         Consumer consumer = new Consumer();
@@ -156,9 +147,14 @@ class MatchingControllerTest {
         providerLocation.add(40.7128);
         providerLocation.add(-74.0060);
 
-        ArrayList<String> providerServices = new ArrayList<String>();
-        providerServices.add("Healthcare");
-        serviceProvider.setServicesOffered(providerServices);
+        ArrayList<Service> providerServices = new ArrayList<Service>();
+//        providerServices.add("Healthcare");
+        Service service = new Service();
+        service.setId(1L);
+        service.setServiceName("Healthcare");
+        service.setProviderId(serviceProvider.getId());
+        providerServices.add(service);
+        serviceProvider.setServices(providerServices);
         serviceProvider.setLocation(providerLocation);
 
         ArrayList<TupleDateTime> providerAvailabilities = new ArrayList<TupleDateTime>();
@@ -174,12 +170,13 @@ class MatchingControllerTest {
         consumerRequest.setConsumerId(1);
         consumerRequest.setPreferredProviderID(1L);
         consumerRequest.setRequestId(3L);
-        consumerRequest.setServiceType("Healthcare");
+//        consumerRequest.setServiceType("Healthcare");
+        consumerRequest.setServiceType(service);
         when(consumerRequestRepository.save(consumerRequest)).thenReturn(consumerRequest);
 
         List<ServiceProvider> expectedList = new ArrayList<>();
         expectedList.add(serviceProvider);
-        List<ServiceProvider> result = matchingController.sortedProvidersResponse(consumerRequest);
+        List<ServiceProvider> result = matchingController.sortedProvidersResponse(consumerRequest).getBody();
         assertEquals(result, expectedList);
     }
 
@@ -198,7 +195,7 @@ class MatchingControllerTest {
         appointment.setConsumerId(1);
         appointment.setProviderID(1);
         when(appointmentRepository.save(appointment)).thenReturn(appointment);
-        Appointment result = matchingController.appointmentAdd(1L, appointment);
+        Appointment result = matchingController.appointmentAdd(1L, appointment).getBody();
         assertEquals(result, appointment);
     }
 
@@ -237,7 +234,8 @@ class MatchingControllerTest {
         serviceProvider.setId(1);
         serviceProvider.setParentClientId(1);
         when(serviceProviderRepository.save(serviceProvider)).thenReturn(serviceProvider);
-        ServiceProvider result = matchingController.serviceProviderAdd(1L, serviceProvider);
+        ResponseEntity responseEntity = matchingController.serviceProviderAdd(1L, serviceProvider);
+        ServiceProvider result = (ServiceProvider) responseEntity.getBody();
         matchingController.deleteServiceProviders(1L, 1L);
         verify(serviceProviderRepository, times(1)).delete(serviceProvider);
     }
@@ -257,7 +255,7 @@ class MatchingControllerTest {
         appointment.setConsumerId(1);
         appointment.setProviderID(1);
         when(appointmentRepository.save(appointment)).thenReturn(appointment);
-        Appointment result = matchingController.appointmentAdd(1L, appointment);
+        Appointment result = matchingController.appointmentAdd(1L, appointment).getBody();
         matchingController.deleteAppointment(1L, 1L);
         verify(appointmentRepository, times(1)).delete(appointment);
     }
@@ -270,7 +268,7 @@ class MatchingControllerTest {
         client.setClientId(2);
         client.setClientName("Client2");
         String name = "Client2";
-        matchingController.clientsAdd("Client2", model);
+        matchingController.clientsAdd(client);
 
         ConsumerRepository consumerRepository = Mockito.mock(ConsumerRepository.class);
         Consumer consumer = new Consumer();
@@ -291,9 +289,14 @@ class MatchingControllerTest {
         providerLocation.add(40.7128);
         providerLocation.add(-74.0060);
 
-        ArrayList<String> providerServices = new ArrayList<String>();
-        providerServices.add("Healthcare");
-        serviceProvider.setServicesOffered(providerServices);
+        ArrayList<Service> providerServices = new ArrayList<Service>();
+//        providerServices.add("Healthcare");
+        Service service = new Service();
+        service.setId(1L);
+        service.setServiceName("Healthcare");
+        service.setProviderId(serviceProvider.getId());
+        providerServices.add(service);
+        serviceProvider.setServices(providerServices);
         serviceProvider.setLocation(providerLocation);
 
         ArrayList<TupleDateTime> providerAvailabilities = new ArrayList<TupleDateTime>();
@@ -309,7 +312,8 @@ class MatchingControllerTest {
         consumerRequest.setConsumerId(1);
         consumerRequest.setPreferredProviderID(1L);
         consumerRequest.setRequestId(3L);
-        consumerRequest.setServiceType("Healthcare");
+//        consumerRequest.setServiceType("Healthcare");
+        consumerRequest.setServiceType(service);
         matchingController.deleteConsumerRequest(1L, 1L);
         verify(consumerRequestRepository, times(1)).delete(consumerRequest);
     }

@@ -1,40 +1,47 @@
 package com.tabsnotspaces.match;
 
-import org.springframework.web.bind.annotation.*;
-import org.springframework.ui.Model;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Collections;
-import java.util.Locale;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.*;
 
 
 @RestController
+@Validated
+@CrossOrigin(origins = "http://localhost:4200/")
 public class MatchingController {
-	
+
 	@Autowired
 	ClientRepository repository;
-	
+
 	@Autowired
 	ConsumerRepository consumerRepository;
-	
+
 	@Autowired
 	ServiceProviderRepository serviceProviderRepository;
-	
+
+	@Autowired
+	ServiceRepository serviceRepository;
+
 	@Autowired
 	ConsumerRequestRepository consumerRequestRepository;
-	
+
 	@Autowired
 	AppointmentRepository appointmentRepository;
 
@@ -55,12 +62,19 @@ public class MatchingController {
 			client = clientOpt.get();
 			return new ResponseEntity<Client> (client, HttpStatus.ACCEPTED);
 		}
-		// https://stackoverflow.com/questions/50904742/property-or-field-name-cannot-be-found-on-object-of-type-java-util-optional
+
 		return new ResponseEntity<Client> (client, HttpStatus.BAD_REQUEST);
 	}
 
-	
-	// https://stackoverflow.com/questions/57184276/the-method-findonelong-is-undefined-for-the-type-personrepository
+	@GetMapping("/clientByName/{name}")
+	public ResponseEntity<Object> clientByName(@PathVariable @NotNull(message = "client name should not be null") String name) {
+		Optional<Client> existingClient = repository.findByClientNameIgnoreCase(name);
+		if (existingClient.isEmpty()) {
+            return ResponseEntity.badRequest().body(String.format("Client with name: '%s' does not exist!", name));
+        }
+
+		return ResponseEntity.ok(existingClient.get());
+	}
 
 	/**
 	 * Retrieve a list of all clients.
@@ -71,25 +85,27 @@ public class MatchingController {
 	public Iterable<Client> clientsList(){
 		return repository.findAll();
 	}
-	
+
 	// TODO change to @RequestBody Client client as input
 	/**
 	 * Create a new client.
 	 *
-	 * @param name  The name of the new client.
-	 * @param model The model for the client.
+	 * @param client The new client to add.
+	 * @return The newly created client.
 	 * @return The newly created client.
 	 */
 	@PostMapping("/clients")
-	public ResponseEntity<Client> clientsAdd(@RequestParam String name, Model model){
-		Client client = new Client();
-		client.setClientName(name);
-		
-		return new ResponseEntity<Client>(repository.save(client), HttpStatus.CREATED);
+	public ResponseEntity<Object> clientsAdd(@Valid @RequestBody Client client) {
+		Optional<Client> existingClient = repository.findByClientNameIgnoreCase(client.getClientName());
+		if (existingClient.isPresent()) {
+			return ResponseEntity.badRequest().body(String.format("Client with name: '%s' already exist!", client.getClientName()));
+		}
+
+		return ResponseEntity.ok(repository.save(client));
 	}
 
 	@GetMapping("/client{id}/review")
-	public List<Review> getReview (@PathVariable Long id) {
+	public List<Review> getReview(@PathVariable @Min(value = 1, message = "client id should be greater than 0") Long id) {
 		return (List<Review>) reviewRepository.findAll();
 	}
 
@@ -99,7 +115,7 @@ public class MatchingController {
 	 * @param id The ID of the client to delete.
 	 */
 	@DeleteMapping("/client/{id}")
-	void deleteClient(@PathVariable Long id) {
+	void deleteClient(@PathVariable @Min(value = 1, message = "client id should be greater than 0") Long id) {
 		repository.deleteById(id);
 	}
 
@@ -111,22 +127,43 @@ public class MatchingController {
 	 * @return The newly created consumer.
 	 */
 	@PostMapping("/client/{id}/consumer")
-	public ResponseEntity<Consumer> consumerAdd(@PathVariable Long id,
-			@RequestBody Consumer consumer){
+	public ResponseEntity<Object> consumerAdd(@PathVariable @Min(value = 1, message = "client id should be greater than 0") Long id,
+									  @Valid @RequestBody Consumer consumer) {
 		Optional<Client> clientOpt = repository.findById(id);
-		Client client = null;
-		if(clientOpt.isPresent()) { // TODO report error otherwise
-			client = clientOpt.get();
-			// TODO check if consumer is present
-			consumer.setParentClientId(id);
-			Consumer createdConsumer = consumerRepository.save(consumer);
-			client.getConsumers().add(consumer);
-			repository.save(client);
-			
-			return new ResponseEntity<Consumer>(createdConsumer, HttpStatus.CREATED);
+		if (clientOpt.isEmpty()) {
+			return ResponseEntity.badRequest().body(String.format("Client with ID: '%d' does not exist!", id));
 		}
 
-		return new ResponseEntity<Consumer>(consumer, HttpStatus.BAD_REQUEST);
+		Client client = clientOpt.get();
+
+		Optional<Consumer> existingConsumer = consumerRepository.findByParentClientIdAndConsumerNameIgnoreCase(id, consumer.getConsumerName());
+		if (existingConsumer.isPresent()) {
+			return ResponseEntity.badRequest().body(String.format("Consumer with name: '%s' already exist in client: '%s'!", consumer.getConsumerName(), client.getClientName()));
+		}
+
+		Consumer createdConsumer = consumerRepository.save(consumer);
+		client.getConsumers().add(consumer);
+		repository.save(client);
+
+		return ResponseEntity.ok(createdConsumer);
+	}
+
+	@GetMapping("/client/{id}/consumer/{name}")
+	public ResponseEntity<Object> consumerGet(@PathVariable @Min(value = 1, message = "client id should be greater than 0") Long id,
+									  @PathVariable @NotNull(message = "consumer name should not be null") String name) {
+		Optional<Client> clientOpt = repository.findById(id);
+		if (clientOpt.isEmpty()) {
+			return ResponseEntity.badRequest().body(String.format("Client with ID: '%d' does not exist!", id));
+		}
+
+		Client client = clientOpt.get();
+
+		Optional<Consumer> existingConsumer = consumerRepository.findByParentClientIdAndConsumerNameIgnoreCase(id, name);
+		if (existingConsumer.isEmpty()) {
+			return ResponseEntity.badRequest().body(String.format("Consumer with name: '%s' does not exist in client: '%s'!", name, client.getClientName()));
+		}
+
+		return ResponseEntity.ok(existingConsumer.get());
 	}
 
 	/**
@@ -137,50 +174,96 @@ public class MatchingController {
 	 * @return The newly created service provider.
 	 */
 	@PostMapping("/client/{id}/serviceProvider")
-	public ResponseEntity<ServiceProvider> serviceProviderAdd(@PathVariable Long id, @RequestBody ServiceProvider serviceProvider){
+	public ResponseEntity<Object> serviceProviderAdd(@PathVariable @Min(value = 1, message = "client id should be greater than 0") Long id, @Valid @RequestBody ServiceProvider serviceProvider) {
 		Optional<Client> clientOpt = repository.findById(id);
-		Client client = null;
-		if(clientOpt.isPresent()) { // TODO report error otherwise
-			client = clientOpt.get();
-			// TODO check if service provider is present
-			serviceProvider.setParentClientId(id);
-			ServiceProvider createdServiceProvider = serviceProviderRepository.save(serviceProvider);
-			client.getServiceProviders().add(serviceProvider);
-			repository.save(client);
-
-			return new ResponseEntity<ServiceProvider>(createdServiceProvider, HttpStatus.CREATED);
+		if (clientOpt.isEmpty()) {
+			return ResponseEntity.badRequest().body(String.format("Client with ID: '%d' does not exist!", id));
 		}
 
-		return new ResponseEntity<ServiceProvider>(serviceProvider, HttpStatus.BAD_REQUEST);
+		Client client = clientOpt.get();
+		Optional<ServiceProvider> existingServiceProvider = serviceProviderRepository.findByParentClientIdAndProviderNameIgnoreCase(id, serviceProvider.getProviderName());
+		if (existingServiceProvider.isPresent()) {
+			return ResponseEntity.badRequest().body(String.format("Service Provider with name: '%s' already exist in client: '%s'!", serviceProvider.getProviderName(), client.getClientName()));
+		}
+
+		serviceProvider.setParentClientId(id);
+		ServiceProvider createdServiceProvider = serviceProviderRepository.save(serviceProvider);
+		client.getServiceProviders().add(serviceProvider);
+		repository.save(client);
+
+		return ResponseEntity.ok(createdServiceProvider);
+	}
+
+	/**
+	 * Add a new service provider to a client.
+	 *
+	 * @param id      The ID of the client.
+	 * @param service The new service provider to add.
+	 * @return The newly created service provider.
+	 */
+	@PostMapping("/client/{id}/service")
+	public ResponseEntity<Object> serviceAdd(@PathVariable @Min(value = 1, message = "client id should be greater than 0") Long id, @Valid @RequestBody Service service) {
+		Optional<Client> clientOpt = repository.findById(id);
+
+		if (clientOpt.isEmpty()) {
+			return ResponseEntity.badRequest().body(String.format("Client with ID: '%d' does not exist!", id));
+		}
+
+		Optional<ServiceProvider> serviceProviderOpt = serviceProviderRepository.findById(service.getProviderId());
+
+		if (serviceProviderOpt.isEmpty()) {
+			return ResponseEntity.badRequest().body(String.format("Service Provider with ID: '%d' does not exist!", service.getProviderId()));
+		}
+
+		Client client = clientOpt.get();
+
+		Optional<Service> existingService = serviceRepository.findByProviderIdAndServiceNameIgnoreCase(service.getProviderId(), service.getServiceName());
+		if (existingService.isPresent()) {
+			return ResponseEntity.badRequest().body(String.format("Service with name: '%s' already exist in client: '%s'!", service.getServiceName(), serviceProviderOpt.get().getProviderName()));
+		}
+
+		Service createdService = serviceRepository.save(service);
+		ServiceProvider serviceProvider = client.getServiceProvider(service.getProviderId());
+		if (serviceProvider != null) {
+			serviceProvider.getServices().add(service);
+		}
+		repository.save(client);
+
+		return ResponseEntity.ok(createdService);
 	}
 
 	@PostMapping("/client/{id}/addReview")
-	public ResponseEntity<Review> reviewAdd(@PathVariable Long id, @RequestBody Review review) {
+	public ResponseEntity<Object> reviewAdd(@PathVariable @Min(value = 1, message = "client id should be greater than 0") Long id, @Valid @RequestBody Review review) {
 		Optional<Client> clientOpt = repository.findById(id);
-		Client client = null;
-		ServiceProvider serviceProvider = null;
-		if(clientOpt.isPresent()) { // TODO report error otherwise
-			client = clientOpt.get();
-			Optional<ServiceProvider> providerOpt = serviceProviderRepository.findById(review.getServiceProviderId());
-			if (providerOpt.isPresent()) {
-				serviceProvider = providerOpt.get();
-				serviceProvider.getReviews().add(review);
-				updateAverage(serviceProvider);
-			}
-
-			Review createdReview = reviewRepository.save(review);
-			client.getReviews().add(review);
-			repository.save(client);
-
-			return new ResponseEntity<Review> (createdReview, HttpStatus.CREATED);
+		if (clientOpt.isEmpty()) {
+			return ResponseEntity.badRequest().body(String.format("Client with ID: '%d' does not exist!", id));
 		}
 
-		return new ResponseEntity<Review> (review, HttpStatus.BAD_REQUEST);
+		Optional<ServiceProvider> serviceProviderOpt = serviceProviderRepository.findById(review.getServiceProviderId());
+		if (serviceProviderOpt.isEmpty()) {
+			return ResponseEntity.badRequest().body(String.format("Service Provider with ID: '%d' does not exist!", review.getServiceProviderId()));
+		}
+
+		Optional<Consumer> consumerOpt = consumerRepository.findById(review.getConsumerId());
+		if (consumerOpt.isEmpty()) {
+			return ResponseEntity.badRequest().body(String.format("Consumer with ID: '%d' does not exist!", review.getConsumerId()));
+		}
+
+		Client client = clientOpt.get();
+		ServiceProvider serviceProvider = serviceProviderOpt.get();
+		serviceProvider.getReviews().add(review);
+		updateAverage(serviceProvider);
+
+		Review createdReview = reviewRepository.save(review);
+		client.getReviews().add(review);
+		repository.save(client);
+
+		return ResponseEntity.ok(createdReview);
 	}
 
 
 	@GetMapping("/client/{id}/getAvailability")
-	public ResponseEntity<List<TupleDateTime>> getAvailability(@PathVariable Long id, @RequestParam Long providerId) {
+	public ResponseEntity<List<TupleDateTime>> getAvailability(@PathVariable @Min(value = 1, message = "client id should be greater than 0") Long id, @RequestParam @Min(value = 1, message = "provider id should be greater than 0") Long providerId) {
 		Optional<Client> clientOpt = repository.findById(id);
 		Client client = null;
 		if (clientOpt.isPresent()) {
@@ -192,14 +275,14 @@ public class MatchingController {
 				return new ResponseEntity<List<TupleDateTime>> (currentAvailabilities, HttpStatus.ACCEPTED);
 			}
 		}
-		
+
 		List<TupleDateTime> nullList = null;
 		return new ResponseEntity<List<TupleDateTime>> (nullList, HttpStatus.BAD_REQUEST);
-    }
-	
+	}
+
 	@PostMapping("/client/{id}/addAvailability")
 	public ResponseEntity<TupleDateTime> addAvailability(@PathVariable Long id, @RequestParam Long providerId,
-										   @RequestBody TupleDateTime newAvailability) {
+														 @RequestBody TupleDateTime newAvailability) {
 		Optional<Client> clientOpt = repository.findById(id);
 		Client client = null;
 		if (clientOpt.isPresent()) {
@@ -210,16 +293,16 @@ public class MatchingController {
 				List<TupleDateTime> currentAvailabilities = serviceProvider.getAvailabilities();
 				currentAvailabilities.add(newAvailability);
 				serviceProviderRepository.save(serviceProvider); // is this necessary?
-				
+
 				return new ResponseEntity<TupleDateTime> (newAvailability, HttpStatus.ACCEPTED);
 			}
 		}
 		return new ResponseEntity<TupleDateTime> (newAvailability, HttpStatus.BAD_REQUEST);
-    }
+	}
 
 	@DeleteMapping("/client/{id}/deleteAvailability")
 	public ResponseEntity deleteAvailability(@PathVariable Long id, @RequestParam Long providerId,
-			@RequestBody TupleDateTime expiredAvailability) {
+											 @RequestBody TupleDateTime expiredAvailability) {
 		Optional<Client> clientOpt = repository.findById(id);
 		Client client = null;
 		if (clientOpt.isPresent()) {
@@ -236,14 +319,14 @@ public class MatchingController {
 				}
 				currentAvailabilities.remove(removeAvailability);
 				serviceProviderRepository.save(serviceProvider);
-				
+
 				return new ResponseEntity(HttpStatus.ACCEPTED);
 			}
 		}
-		
+
 		return new ResponseEntity(HttpStatus.BAD_REQUEST);
 	}
-	
+
 	//@PostMapping("/client/{id}/consumerRequest")
 	/**
 	 * Add a new consumer request to a client.
@@ -257,7 +340,7 @@ public class MatchingController {
 		if(clientOpt.isPresent()) { // TODO report error otherwise
 			//  TODO check if consumer request is present
 			ConsumerRequest createdConsumerRequest = consumerRequestRepository.save(consumerRequest);
-			
+
 			long consumerId = consumerRequest.getConsumerId();
 			//  check if consumer is present
 			Optional<Consumer> cOpt = consumerRepository.findById(consumerId);
@@ -282,7 +365,7 @@ public class MatchingController {
 	@PostMapping("/client/{id}/consumerRequest")
 	public ResponseEntity<List<ServiceProvider>> sortedProvidersResponse(@RequestBody ConsumerRequest consumerRequest) {
 		TupleDateTime requestedDate = consumerRequest.getRequestDate();
-		String requestedService = consumerRequest.getServiceType();
+		Service requestedService = consumerRequest.getServiceType();
 		Consumer consumer = new Consumer();
 		Optional<Consumer> cOpt = consumerRepository.findById(consumerRequest.getConsumerId());
 		if(cOpt.isPresent()) {
@@ -296,7 +379,7 @@ public class MatchingController {
 		List<ServiceProvider> availableProviders =
 				new ArrayList<ServiceProvider>(serviceProviderRepository.findByAvailabilities(requestedDate));
 		for (int i = 0; i < availableProviders.size(); i++) {
-			if (!(availableProviders.get(i).getServicesOffered().contains(requestedService))) {
+			if (!(availableProviders.get(i).getServices().contains(requestedService))) {
 				availableProviders.remove(availableProviders.get(i));
 			}
 		}
@@ -326,7 +409,7 @@ public class MatchingController {
 					ServiceProvider provider = providerOpt.get();
 
 					// check that service provider is available for appointment and service requested matches
-					if (!provider.getServicesOffered().contains(appointment.getServiceType())) {
+					if (!provider.getServices().contains(appointment.getServiceType())) {
 						throw new RuntimeException("Service not available for this provider");
 					}
 					if (!provider.getAvailabilities().contains(appointment.getAppointmentTime())) {
@@ -334,13 +417,13 @@ public class MatchingController {
 					}
 
 					Appointment createdAppointment = appointmentRepository.save(appointment);
-					
+
 					consumer.getAppointments().add(appointment);
 					consumerRepository.save(consumer);
-					
+
 					provider.getBookings().add(appointment);
 					serviceProviderRepository.save(provider);
-					
+
 					return new ResponseEntity<Appointment>(createdAppointment, HttpStatus.CREATED);
 				}
 			}
