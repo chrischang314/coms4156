@@ -2,6 +2,7 @@ package com.tabsnotspaces.match;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -12,6 +13,7 @@ import java.util.*;
 
 @RestController
 @Validated
+@CrossOrigin(origins = "http://localhost:4200")
 public class MatchingController {
 
     @Autowired
@@ -52,6 +54,15 @@ public class MatchingController {
         return client;
     }
 
+    @GetMapping("/clientByName/{name}")
+    public ResponseEntity clientByName(@PathVariable @NotNull(message = "client name should not be null") String name) {
+        Optional<Client> existingClient = repository.findByClientNameIgnoreCase(name);
+        if (existingClient.isEmpty()) {
+            return ResponseEntity.badRequest().body(String.format("Client with name: '%s' does not exist!", name));
+        }
+
+        return ResponseEntity.ok(existingClient.get());
+    }
 
     // https://stackoverflow.com/questions/57184276/the-method-findonelong-is-undefined-for-the-type-personrepository
 
@@ -153,6 +164,24 @@ public class MatchingController {
         repository.save(client);
 
         return ResponseEntity.ok(createdServiceProvider);
+    }
+
+    @GetMapping("/client/{id}/consumer/{name}")
+    public ResponseEntity consumerGet(@PathVariable @Min(value = 1, message = "client id should be greater than 0") Long id,
+                                      @PathVariable @NotNull(message = "consumer name should not be null") String name) {
+        Optional<Client> clientOpt = repository.findById(id);
+        if (clientOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body(String.format("Client with ID: '%d' does not exist!", id));
+        }
+
+        Client client = clientOpt.get();
+
+        Optional<Consumer> existingConsumer = consumerRepository.findByParentClientIdAndConsumerNameIgnoreCase(id, name);
+        if (existingConsumer.isEmpty()) {
+            return ResponseEntity.badRequest().body(String.format("Consumer with name: '%s' does not exist in client: '%s'!", name, client.getClientName()));
+        }
+
+        return ResponseEntity.ok(existingConsumer.get());
     }
 
     /**
