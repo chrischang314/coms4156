@@ -63,15 +63,12 @@ class MatchingControllerTest {
 
     @Test
     void clientsAddTest() {
-        ClientRepository clientRepository = Mockito.mock(ClientRepository.class);
-        Model model = Mockito.mock(Model.class);
-
         Client client = new Client();
         client.setClientId(1);
         client.setClientName("Client1");
         String name = "Client1";
         when(clientRepository.save(client)).thenReturn(client);
-        ResponseEntity responseEntity = matchingController.clientsAdd(client);
+        ResponseEntity<Object> responseEntity = matchingController.clientsAdd(client);
         Client result = (Client) responseEntity.getBody();
         assertEquals(result.getClientName(), name);
     }
@@ -179,7 +176,7 @@ class MatchingControllerTest {
 
         List<ServiceProvider> expectedList = new ArrayList<>();
         expectedList.add(serviceProvider);
-        List<ServiceProvider> result = matchingController.sortedProvidersResponse(consumerRequest);
+        List<ServiceProvider> result = matchingController.sortedProvidersResponse(consumerRequest).getBody();
         assertEquals(result, expectedList);
     }
 
@@ -198,7 +195,7 @@ class MatchingControllerTest {
         appointment.setConsumerId(1);
         appointment.setProviderID(1);
         when(appointmentRepository.save(appointment)).thenReturn(appointment);
-        Appointment result = matchingController.appointmentAdd(1L, appointment);
+        Appointment result = matchingController.appointmentAdd(1L, appointment).getBody();
         assertEquals(result, appointment);
     }
 
@@ -258,7 +255,7 @@ class MatchingControllerTest {
         appointment.setConsumerId(1);
         appointment.setProviderID(1);
         when(appointmentRepository.save(appointment)).thenReturn(appointment);
-        Appointment result = matchingController.appointmentAdd(1L, appointment);
+        Appointment result = matchingController.appointmentAdd(1L, appointment).getBody();
         matchingController.deleteAppointment(1L, 1L);
         verify(appointmentRepository, times(1)).delete(appointment);
     }
