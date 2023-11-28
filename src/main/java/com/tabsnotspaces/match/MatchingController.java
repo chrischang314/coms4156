@@ -16,6 +16,8 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 
 @RestController
@@ -46,14 +48,15 @@ public class MatchingController {
 	 * @return The client with the specified ID.
 	 */
 	@GetMapping("/client/{id}")
-	public Client client(@PathVariable Long id) {
+	public ResponseEntity<Client> client(@PathVariable Long id) {
 		Optional<Client> clientOpt = repository.findById(id);
 		Client client = null;
 		if(clientOpt.isPresent()) {
 			client = clientOpt.get();
+			return new ResponseEntity<Client> (client, HttpStatus.ACCEPTED);
 		}
 		// https://stackoverflow.com/questions/50904742/property-or-field-name-cannot-be-found-on-object-of-type-java-util-optional
-		return client;
+		return new ResponseEntity<Client> (client, HttpStatus.BAD_REQUEST);
 	}
 
 	
@@ -78,11 +81,11 @@ public class MatchingController {
 	 * @return The newly created client.
 	 */
 	@PostMapping("/clients")
-	public Client clientsAdd(@RequestParam String name, Model model){
+	public ResponseEntity<Client> clientsAdd(@RequestParam String name, Model model){
 		Client client = new Client();
 		client.setClientName(name);
 		
-		return repository.save(client);
+		return new ResponseEntity<Client>(repository.save(client), HttpStatus.CREATED);
 	}
 
 	@GetMapping("/client{id}/review")
@@ -108,7 +111,7 @@ public class MatchingController {
 	 * @return The newly created consumer.
 	 */
 	@PostMapping("/client/{id}/consumer")
-	public Consumer consumerAdd(@PathVariable Long id,
+	public ResponseEntity<Consumer> consumerAdd(@PathVariable Long id,
 			@RequestBody Consumer consumer){
 		Optional<Client> clientOpt = repository.findById(id);
 		Client client = null;
@@ -120,10 +123,10 @@ public class MatchingController {
 			client.getConsumers().add(consumer);
 			repository.save(client);
 			
-			return createdConsumer;
+			return new ResponseEntity<Consumer>(createdConsumer, HttpStatus.CREATED);
 		}
 
-		return consumer;
+		return new ResponseEntity<Consumer>(consumer, HttpStatus.BAD_REQUEST);
 	}
 
 	/**
@@ -134,7 +137,7 @@ public class MatchingController {
 	 * @return The newly created service provider.
 	 */
 	@PostMapping("/client/{id}/serviceProvider")
-	public ServiceProvider serviceProviderAdd(@PathVariable Long id, @RequestBody ServiceProvider serviceProvider){
+	public ResponseEntity<ServiceProvider> serviceProviderAdd(@PathVariable Long id, @RequestBody ServiceProvider serviceProvider){
 		Optional<Client> clientOpt = repository.findById(id);
 		Client client = null;
 		if(clientOpt.isPresent()) { // TODO report error otherwise
@@ -144,14 +147,14 @@ public class MatchingController {
 			client.getServiceProviders().add(serviceProvider);
 			repository.save(client);
 
-			return createdServiceProvider;
+			return new ResponseEntity<ServiceProvider>(createdServiceProvider, HttpStatus.CREATED);
 		}
 
-		return serviceProvider;
+		return new ResponseEntity<ServiceProvider>(serviceProvider, HttpStatus.BAD_REQUEST);
 	}
 
 	@PostMapping("/client/{id}/addReview")
-	public Review reviewAdd(@PathVariable Long id, @RequestBody Review review) {
+	public ResponseEntity<Review> reviewAdd(@PathVariable Long id, @RequestBody Review review) {
 		Optional<Client> clientOpt = repository.findById(id);
 		Client client = null;
 		ServiceProvider serviceProvider = null;
@@ -168,15 +171,15 @@ public class MatchingController {
 			client.getReviews().add(review);
 			repository.save(client);
 
-			return createdReview;
+			return new ResponseEntity<Review> (createdReview, HttpStatus.CREATED);
 		}
 
-		return review;
+		return new ResponseEntity<Review> (review, HttpStatus.BAD_REQUEST);
 	}
 
 
 	@GetMapping("/client/{id}/getAvailability")
-	public List<TupleDateTime> getAvailability(@PathVariable Long id, @RequestParam Long providerId) {
+	public ResponseEntity<List<TupleDateTime>> getAvailability(@PathVariable Long id, @RequestParam Long providerId) {
 		Optional<Client> clientOpt = repository.findById(id);
 		Client client = null;
 		if (clientOpt.isPresent()) {
@@ -185,14 +188,16 @@ public class MatchingController {
 			if (sP.isPresent()) {
 				ServiceProvider serviceProvider = sP.get();
 				List<TupleDateTime> currentAvailabilities = serviceProvider.getAvailabilities();
-				return currentAvailabilities;
+				return new ResponseEntity<List<TupleDateTime>> (currentAvailabilities, HttpStatus.ACCEPTED);
 			}
 		}
-		return null;
+		
+		List<TupleDateTime> nullList = null;
+		return new ResponseEntity<List<TupleDateTime>> (nullList, HttpStatus.BAD_REQUEST);
     }
 	
 	@PostMapping("/client/{id}/addAvailability")
-	public TupleDateTime addAvailability(@PathVariable Long id, @RequestParam Long providerId,
+	public ResponseEntity<TupleDateTime> addAvailability(@PathVariable Long id, @RequestParam Long providerId,
 										   @RequestBody TupleDateTime newAvailability) {
 		Optional<Client> clientOpt = repository.findById(id);
 		Client client = null;
@@ -204,13 +209,15 @@ public class MatchingController {
 				List<TupleDateTime> currentAvailabilities = serviceProvider.getAvailabilities();
 				currentAvailabilities.add(newAvailability);
 				serviceProviderRepository.save(serviceProvider); // is this necessary?
+				
+				return new ResponseEntity<TupleDateTime> (newAvailability, HttpStatus.ACCEPTED);
 			}
 		}
-		return newAvailability;
+		return new ResponseEntity<TupleDateTime> (newAvailability, HttpStatus.BAD_REQUEST);
     }
 
 	@DeleteMapping("/client/{id}/deleteAvailability")
-	public void deleteAvailability(@PathVariable Long id, @RequestParam Long providerId,
+	public ResponseEntity deleteAvailability(@PathVariable Long id, @RequestParam Long providerId,
 			@RequestBody TupleDateTime expiredAvailability) {
 		Optional<Client> clientOpt = repository.findById(id);
 		Client client = null;
@@ -228,8 +235,12 @@ public class MatchingController {
 				}
 				currentAvailabilities.remove(removeAvailability);
 				serviceProviderRepository.save(serviceProvider);
+				
+				return new ResponseEntity(HttpStatus.ACCEPTED);
 			}
 		}
+		
+		return new ResponseEntity(HttpStatus.BAD_REQUEST);
 	}
 	
 	//@PostMapping("/client/{id}/consumerRequest")
@@ -268,13 +279,17 @@ public class MatchingController {
 	 * @return A list of service providers matching the request, sorted by proximity and rating.
 	 */
 	@PostMapping("/client/{id}/consumerRequest")
-	public List<ServiceProvider> sortedProvidersResponse(@RequestBody ConsumerRequest consumerRequest) {
+	public ResponseEntity<List<ServiceProvider>> sortedProvidersResponse(@RequestBody ConsumerRequest consumerRequest) {
 		TupleDateTime requestedDate = consumerRequest.getRequestDate();
 		String requestedService = consumerRequest.getServiceType();
 		Consumer consumer = new Consumer();
 		Optional<Consumer> cOpt = consumerRepository.findById(consumerRequest.getConsumerId());
-		if(cOpt.isPresent()) { // TODO return error otherwise
+		if(cOpt.isPresent()) {
 			consumer = cOpt.get();
+		}
+		else {
+			List<ServiceProvider> nullList = null;
+			return new ResponseEntity<List<ServiceProvider>> (nullList, HttpStatus.BAD_REQUEST);
 		}
 		// Fetch providers who match the requested date & service
 		List<ServiceProvider> availableProviders =
@@ -285,7 +300,7 @@ public class MatchingController {
 			}
 		}
 		Collections.sort(availableProviders, new ServiceProviderComparator(consumer));
-		return availableProviders;
+		return new ResponseEntity<List<ServiceProvider>> (availableProviders, HttpStatus.ACCEPTED);
 	}
 
 	/**
@@ -296,7 +311,7 @@ public class MatchingController {
 	 * @return The newly created appointment.
 	 */
 	@PostMapping("/client/{id}/bookAppointment")
-	public Appointment appointmentAdd(@PathVariable Long id, @RequestBody Appointment appointment){
+	public ResponseEntity<Appointment> appointmentAdd(@PathVariable Long id, @RequestBody Appointment appointment){
 		Optional<Client> clientOpt = repository.findById(id);
 		if(clientOpt.isPresent()) {		// TODO report error otherwise
 			Client client = clientOpt.get();
@@ -325,12 +340,12 @@ public class MatchingController {
 					provider.getBookings().add(appointment);
 					serviceProviderRepository.save(provider);
 					
-					return createdAppointment;
+					return new ResponseEntity<Appointment>(createdAppointment, HttpStatus.CREATED);
 				}
 			}
 		}
 
-		return appointment;
+		return new ResponseEntity<Appointment>(appointment, HttpStatus.BAD_REQUEST);
 	}
 
 	/**
@@ -375,13 +390,16 @@ public class MatchingController {
 	 * @param consumerRequestId    The ID of the consumer request to delete.
 	 */
 	@DeleteMapping("/client/{id}/consumerRequest/{consumerRequestId}")
-	void deleteConsumerRequest(@PathVariable Long id, @PathVariable Long consumerRequestId) {
+	ResponseEntity deleteConsumerRequest(@PathVariable Long id, @PathVariable Long consumerRequestId) {
 		Optional<Client> clientOpt = repository.findById(id);
 		Client client = null;
 		if(clientOpt.isPresent()) {
 			client = clientOpt.get();
 			consumerRequestRepository.deleteById(consumerRequestId);
+			// TODO check if delete was successful and return code, for all delete above too
+			return new ResponseEntity(HttpStatus.ACCEPTED);
 		}
+		return new ResponseEntity(HttpStatus.BAD_REQUEST);
 	}
 
 	/**
