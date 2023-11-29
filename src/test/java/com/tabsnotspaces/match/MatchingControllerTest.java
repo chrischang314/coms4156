@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 //@RunWith(SpringRunner.class)
@@ -95,6 +96,7 @@ class MatchingControllerTest {
         when(consumerRepository.save(consumer)).thenReturn(consumer);
         ResponseEntity<Object> responseEntity = matchingController.consumerAdd(1L, consumer);
         Object responseBody = responseEntity.getBody();
+        assertTrue(responseBody instanceof Consumer);
         Consumer result = (Consumer) responseBody;
         assertEquals(result, consumer);
     }
