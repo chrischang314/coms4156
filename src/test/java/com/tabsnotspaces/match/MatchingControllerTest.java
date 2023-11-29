@@ -94,7 +94,8 @@ class MatchingControllerTest {
         consumer.setAppointments(new ArrayList<Appointment>());
         when(consumerRepository.save(consumer)).thenReturn(consumer);
         ResponseEntity<Object> responseEntity = matchingController.consumerAdd(1L, consumer);
-        Consumer result = (Consumer)responseEntity.getBody();
+        Object responseBody = responseEntity.getBody();
+        Consumer result = (Consumer) responseBody;
         assertEquals(result, consumer);
     }
 
