@@ -83,20 +83,21 @@ class MatchingControllerTest {
         ConsumerRepository consumerRepository = Mockito.mock(ConsumerRepository.class);
         Model model = Mockito.mock(Model.class);
         Client client = new Client();
-        client.setClientId(1);
         client.setClientName("Client1");
+        client.setServiceProviders(new ArrayList<>());
+        client.setConsumers(new ArrayList<>());
         String name = "Client1";
         when(clientRepository.save(client)).thenReturn(client);
-
+        matchingController.clientsAdd(client);
         Consumer consumer = new Consumer();
-        consumer.setConsumerId(1);
         consumer.setAddress("New York");
-        consumer.setParentClientId(1);
+        consumer.setParentClientId(client.getClientId());
         consumer.setAppointments(new ArrayList<Appointment>());
         when(consumerRepository.save(consumer)).thenReturn(consumer);
-        ResponseEntity<Object> responseEntity = matchingController.consumerAdd(1L, consumer);
+        ResponseEntity<Object> responseEntity = matchingController.consumerAdd(client.getClientId(), consumer);
         Object responseBody = responseEntity.getBody();
-        Consumer result = (Consumer)responseBody;
+        assertTrue(responseBody instanceof Consumer);
+        Consumer result = (Consumer) responseBody;
         assertEquals(result, consumer);
     }
 
