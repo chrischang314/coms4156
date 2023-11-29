@@ -28,6 +28,29 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
+    - id: auth
+      uses: google-github-actions/auth@v1
+      with:
+        credentials_json: ${{ secrets.GCLOUD_SA_KEY }}
+
+    - name: Set up Google Cloud SQL Proxy
+      uses: mattes/gce-cloudsql-proxy-action@v1
+      with:
+        creds: ${{ secrets.GCLOUD_SA_KEY }}
+        instance: coms4156-402200:us-east4:project
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+
+    - name: Use gcloud CLI
+      run: gcloud info
+
+    - name: Install MySQL
+      run: sudo apt-get install mysql-server
+
+    - name: Start MySQL
+      run: sudo service mysql start
+
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
