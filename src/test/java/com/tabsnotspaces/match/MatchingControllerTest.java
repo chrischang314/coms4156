@@ -93,6 +93,10 @@ class MatchingControllerTest {
         consumer.setAddress("New York");
         consumer.setParentClientId(client.getClientId());
         consumer.setAppointments(new ArrayList<Appointment>());
+        ArrayList<Double> consumerLocation = new ArrayList<>();
+        consumerLocation.add(4.0);
+        consumerLocation.add(4.0);
+        consumer.setLocation(consumerLocation);
         when(consumerRepository.save(consumer)).thenReturn(consumer);
         ResponseEntity<Object> responseEntity = matchingController.consumerAdd(client.getClientId(), consumer);
         Object responseBody = responseEntity.getBody();
