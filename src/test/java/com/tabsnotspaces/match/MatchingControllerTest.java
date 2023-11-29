@@ -96,8 +96,7 @@ class MatchingControllerTest {
         when(consumerRepository.save(consumer)).thenReturn(consumer);
         ResponseEntity<Object> responseEntity = matchingController.consumerAdd(1L, consumer);
         Object responseBody = responseEntity.getBody();
-        assertTrue(responseBody instanceof Consumer);
-        Consumer result = (Consumer) responseBody;
+        Consumer result = (Consumer)responseBody;
         assertEquals(result, consumer);
     }
 
