@@ -93,8 +93,8 @@ class MatchingControllerTest {
         consumer.setParentClientId(1);
         consumer.setAppointments(new ArrayList<Appointment>());
         when(consumerRepository.save(consumer)).thenReturn(consumer);
-        ResponseEntity responseEntity = matchingController.consumerAdd(1L, consumer);
-        Consumer result = (Consumer) responseEntity.getBody();
+        ResponseEntity<Object> responseEntity = matchingController.consumerAdd(1L, consumer);
+        Consumer result = (Consumer)responseEntity.getBody();
         assertEquals(result, consumer);
     }
 
