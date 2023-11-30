@@ -10,6 +10,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
 import java.time.LocalDateTime;
@@ -102,6 +103,7 @@ class MatchingControllerTest {
     void deleteClientTest() {
     }
 
+    @Transactional
     @Test
     void consumerAddTest() {
         Client client = new Client();
