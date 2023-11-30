@@ -376,7 +376,7 @@ class MatchingControllerTest {
 
         ResultActions addProviderResultActions = mockMvc.perform(post("/client/{id}/serviceProvider", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"id\": 2, \"parentClientId\": 1, \"providerName\": \"TestProvider\", \"address\": \"New York\", \"location\": [4.0, 4.0], \"availabilities\": [{\"startTime\":\"2022-10-26T08:00:00\",\"endTime\":\"2022-10-26T09:00:00\"}], \"bookings\": [], \"services\": [\"Eldercare\"]}"));
+                .content("{\"id\": 2, \"parentClientId\": 1, \"providerName\": \"TestProvider\", \"address\": \"New York\", \"location\": [4.0, 4.0], \"availabilities\": [{\"startTime\":\"2022-10-26T08:00:00\",\"endTime\":\"2022-10-26T09:00:00\"}], \"bookings\": [], \"services\": []}"));
                 addProviderResultActions.andExpect(status().isOk());
 
         ResultActions addAppointmentResultActions = mockMvc.perform(post("/client/{id}/bookAppointment", 1L)
