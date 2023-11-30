@@ -36,6 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.springframework.http.HttpStatus;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -301,10 +302,10 @@ class MatchingControllerTest {
 
         ResultActions addProviderResultActions = mockMvc.perform(post("/client/{id}/serviceProvider", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"parentClientId\": 1, \"serviceProviderName\":\"TestProvider\", \"address\": \"New York\", \"location\": [4.0, 4.0], \"availabilities\": [{\"startTime\":\"2022-10-26T08:00:00\",\"endTime\":\"2022-10-26T09:00:00\"}]}"));
+                .content("{\"parentClientId\": 1, \"serviceProviderName\": \"TestProvider\", \"address\": \"New York\", \"location\": [4.0, 4.0], \"availabilities\": [{\"startTime\":\"2022-10-26T08:00:00\",\"endTime\":\"2022-10-26T09:00:00\"}]}"));
                 addProviderResultActions.andExpect(status().isOk());
 
-        ResultActions deleteProviderResultActions = mockMvc.perform(post("/client/{id}/service_providers/{serviceProviderId}", 1L)
+        ResultActions deleteProviderResultActions = mockMvc.perform(delete("/client/{id}/service_providers/{serviceProviderId}", 1L, 2L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"id\": 2, \"parentClientId\": 1, \"providerName\":\"TestProvider\", \"address\": \"New York\", \"location\": [4.0, 4.0], \"availabilities\": [{\"startTime\":\"2022-10-26T08:00:00\",\"endTime\":\"2022-10-26T09:00:00\"}]}"));
                 deleteProviderResultActions.andExpect(status().isOk());
@@ -340,7 +341,7 @@ class MatchingControllerTest {
 
         ResultActions consumerResultActions = mockMvc.perform(post("/client/{id}/consumer", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"parentClientId\": 1, \"consumerName\":\"TestConsumer\", \"address\": \"New York\", \"location\": [4.0, 4.0]}"));
+                .content("{\"parentClientId\": 1, \"consumerName\": \"TestConsumer\", \"address\": \"New York\", \"location\": [4.0, 4.0]}"));
         consumerResultActions.andExpect(status().isOk());
 
         ResultActions addAppointmentResultActions = mockMvc.perform(post("/client/{id}/bookAppointment", 1L)
@@ -348,7 +349,7 @@ class MatchingControllerTest {
                 .content("{\"appointmentId\": 3, \"appointmentTime\": [{\"startTime\":\"2022-10-26T08:00:00\",\"endTime\":\"2022-10-26T09:00:00\"}], \"serviceType\": \"Eldercare\", \"providerID\": 2, \"consumerId\": 4}"));
         addAppointmentResultActions.andExpect(status().isOk());
 
-        ResultActions deleteAppointmentResultActions = mockMvc.perform(post("/client/{id}/appointment/{appointmentId}", 1L, 3L)
+        ResultActions deleteAppointmentResultActions = mockMvc.perform(delete("/client/{id}/appointment/{appointmentId}", 1L, 3L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"appointmentId\": 3}"));
         deleteAppointmentResultActions.andExpect(status().isOk());
