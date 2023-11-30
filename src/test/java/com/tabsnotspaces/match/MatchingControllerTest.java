@@ -302,7 +302,7 @@ class MatchingControllerTest {
 
         ResultActions addProviderResultActions = mockMvc.perform(post("/client/{id}/serviceProvider", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"parentClientId\": 1, \"serviceProviderName\": \"TestProvider\", \"address\": \"New York\", \"location\": [4.0, 4.0], \"availabilities\": [{\"startTime\":\"2022-10-26T08:00:00\",\"endTime\":\"2022-10-26T09:00:00\"}]}"));
+                .content("{\"parentClientId\": 1, \"providerName\": \"TestProvider\", \"address\": \"New York\", \"location\": [4.0, 4.0], \"availabilities\": [{\"startTime\":\"2022-10-26T08:00:00\",\"endTime\":\"2022-10-26T09:00:00\"}]}"));
                 addProviderResultActions.andExpect(status().isOk());
 
         ResultActions deleteProviderResultActions = mockMvc.perform(delete("/client/{id}/service_providers/{serviceProviderId}", 1L, 2L)
