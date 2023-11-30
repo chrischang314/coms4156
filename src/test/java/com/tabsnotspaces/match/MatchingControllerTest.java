@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
@@ -15,13 +16,15 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.junit.runner.RunWith;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.springframework.http.HttpStatus;
 import static org.mockito.Mockito.*;
+import org.mockito.MockitoAnnotations;
 
-//@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @AutoConfigureMockMvc
 @SpringBootTest
 class MatchingControllerTest {
@@ -32,12 +35,32 @@ class MatchingControllerTest {
     @Mock
     private ClientRepository clientRepository;
 
+    @Mock
+    private ConsumerRepository consumerRepository;
+
+    @Mock
+    private ServiceProviderRepository serviceProviderRepository;
+
+    @Mock
+    private ServiceRepository serviceRepository;
+
+    @Mock
+    private ReviewRepository reviewRepository;
+
+    @Mock
+    private ConsumerRequestRepository consumerRequestRepository;
+
+    @Mock
+    private AppointmentRepository appointmentRepository;
+
     @BeforeEach
     void setUp() {
+        MockitoAnnotations.openMocks(this);
     }
 
     @AfterEach
     void tearDown() {
+        Mockito.reset(clientRepository, consumerRepository, serviceProviderRepository, serviceRepository, reviewRepository, appointmentRepository, consumerRequestRepository);
     }
 
     @Test
@@ -81,16 +104,12 @@ class MatchingControllerTest {
 
     @Test
     void consumerAddTest() {
-        ConsumerRepository consumerRepository = Mockito.mock(ConsumerRepository.class);
-        ClientRepository thisClientRepository = Mockito.mock(ClientRepository.class);
-        Model model = Mockito.mock(Model.class);
         Client client = new Client();
         client.setClientName("ClientA");
         client.setServiceProviders(new ArrayList<>());
         client.setConsumers(new ArrayList<>());
         String name = "ClientA";
-        when(thisClientRepository.save(client)).thenReturn(client);
-        matchingController.clientsAdd(client);
+        clientRepository.save(client);
 
         Consumer consumer = new Consumer();
         consumer.setConsumerName("ConsumerA");
@@ -101,7 +120,6 @@ class MatchingControllerTest {
         consumerLocation.add(4.0);
         consumerLocation.add(4.0);
         consumer.setLocation(consumerLocation);
-        when(consumerRepository.save(consumer)).thenReturn(consumer);
 
         ResponseEntity<Object> responseEntity = matchingController.consumerAdd(client.getClientId(), consumer);
         Object responseBody = responseEntity.getBody();
@@ -113,8 +131,6 @@ class MatchingControllerTest {
 
     @Test
     void serviceProviderAddTest() {
-        ServiceProviderRepository serviceProviderRepository = Mockito.mock(ServiceProviderRepository.class);
-        Model model = Mockito.mock(Model.class);
         Client client = new Client();
         client.setClientId(1);
         client.setClientName("Client1");
@@ -126,22 +142,19 @@ class MatchingControllerTest {
         serviceProvider.setId(1);
         serviceProvider.setParentClientId(1);
         when(serviceProviderRepository.save(serviceProvider)).thenReturn(serviceProvider);
-        ResponseEntity responseEntity = matchingController.serviceProviderAdd(1L, serviceProvider);
+        ResponseEntity<Object> responseEntity = matchingController.serviceProviderAdd(1L, serviceProvider);
         ServiceProvider result = (ServiceProvider) responseEntity.getBody();
         assertEquals(result, serviceProvider);
     }
 
     @Test
     void sortedProvidersResponseTest() {
-        ServiceProviderRepository serviceProviderRepository = Mockito.mock(ServiceProviderRepository.class);
-        Model model = Mockito.mock(Model.class);
         Client client = new Client();
         client.setClientId(2);
         client.setClientName("Client2");
         String name = "Client2";
         matchingController.clientsAdd(client);
 
-        ConsumerRepository consumerRepository = Mockito.mock(ConsumerRepository.class);
         Consumer consumer = new Consumer();
         consumer.setConsumerId(1);
         consumer.setAddress("New York");
@@ -177,7 +190,6 @@ class MatchingControllerTest {
         serviceProvider.setParentClientId(1);
         matchingController.serviceProviderAdd(1L, serviceProvider);
 
-        ConsumerRequestRepository consumerRequestRepository = Mockito.mock(ConsumerRequestRepository.class);
         ConsumerRequest consumerRequest = new ConsumerRequest();
         consumerRequest.setRequestDate(providerAvailabilities.get(0));
         consumerRequest.setConsumerId(1);
@@ -195,8 +207,6 @@ class MatchingControllerTest {
 
     @Test
     void appointmentAddTest() {
-        AppointmentRepository appointmentRepository = Mockito.mock(AppointmentRepository.class);
-        Model model = Mockito.mock(Model.class);
         Client client = new Client();
         client.setClientId(1);
         client.setClientName("Client1");
@@ -214,8 +224,6 @@ class MatchingControllerTest {
 
     @Test
     void deleteCustomerTest() {
-        ConsumerRepository consumerRepository = Mockito.mock(ConsumerRepository.class);
-        Model model = Mockito.mock(Model.class);
         Client client = new Client();
         client.setClientId(1);
         client.setClientName("Client1");
@@ -234,8 +242,6 @@ class MatchingControllerTest {
 
     @Test
     void deleteServiceProvidersTest() {
-        ServiceProviderRepository serviceProviderRepository = Mockito.mock(ServiceProviderRepository.class);
-        Model model = Mockito.mock(Model.class);
         Client client = new Client();
         client.setClientId(1);
         client.setClientName("Client1");
@@ -247,7 +253,7 @@ class MatchingControllerTest {
         serviceProvider.setId(1);
         serviceProvider.setParentClientId(1);
         when(serviceProviderRepository.save(serviceProvider)).thenReturn(serviceProvider);
-        ResponseEntity responseEntity = matchingController.serviceProviderAdd(1L, serviceProvider);
+        ResponseEntity<Object> responseEntity = matchingController.serviceProviderAdd(1L, serviceProvider);
         ServiceProvider result = (ServiceProvider) responseEntity.getBody();
         matchingController.deleteServiceProviders(1L, 1L);
         verify(serviceProviderRepository, times(1)).delete(serviceProvider);
@@ -255,8 +261,6 @@ class MatchingControllerTest {
 
     @Test
     void deleteAppointmentTest() {
-        AppointmentRepository appointmentRepository = Mockito.mock(AppointmentRepository.class);
-        Model model = Mockito.mock(Model.class);
         Client client = new Client();
         client.setClientId(1);
         client.setClientName("Client1");
@@ -275,15 +279,12 @@ class MatchingControllerTest {
 
     @Test
     void deleteConsumerRequestTest() {
-        ServiceProviderRepository serviceProviderRepository = Mockito.mock(ServiceProviderRepository.class);
-        Model model = Mockito.mock(Model.class);
         Client client = new Client();
         client.setClientId(2);
         client.setClientName("Client2");
         String name = "Client2";
         matchingController.clientsAdd(client);
 
-        ConsumerRepository consumerRepository = Mockito.mock(ConsumerRepository.class);
         Consumer consumer = new Consumer();
         consumer.setConsumerId(1);
         consumer.setAddress("New York");
@@ -319,7 +320,6 @@ class MatchingControllerTest {
         serviceProvider.setParentClientId(1);
         matchingController.serviceProviderAdd(1L, serviceProvider);
 
-        ConsumerRequestRepository consumerRequestRepository = Mockito.mock(ConsumerRequestRepository.class);
         ConsumerRequest consumerRequest = new ConsumerRequest();
         consumerRequest.setRequestDate(providerAvailabilities.get(0));
         consumerRequest.setConsumerId(1);
