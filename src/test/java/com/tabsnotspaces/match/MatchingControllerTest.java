@@ -126,10 +126,15 @@ class MatchingControllerTest {
         client.setClientId(1L);
         when(clientRepository.save(client)).thenReturn(client);
 
-        ResultActions resultActions = mockMvc.perform(post("/client/{id}/consumer", 1L)
+        ResultActions clientResultActions = mockMvc.perform(post("/clients")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"parentClientId\": 1L, \"consumerName\":\"TestConsumer\", \"consumerAddress\": \"New York\", \"consumerLocation\": (4.0, 4.0)}"));
-                resultActions.andExpect(status().isOk());
+                .content("{\"clientId\": 1, \"clientName\":\"TestClient\""));
+                clientResultActions.andExpect(status().isOk());
+
+        ResultActions consumerResultActions = mockMvc.perform(post("/client/{id}/consumer", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"parentClientId\": 1, \"consumerName\":\"TestConsumer\", \"address\": \"New York\", \"location\": (4.0, 4.0)}"));
+                consumerResultActions.andExpect(status().isOk());
         /*
         Consumer consumer = new Consumer();
         consumer.setConsumerName("ConsumerA");
