@@ -285,13 +285,30 @@ class MatchingControllerTest {
     }
 
     @Test
-    void deleteServiceProvidersTest() {
+    void deleteServiceProvidersTest() throws Exception {
         Client client = new Client();
         client.setClientId(1);
         client.setClientName("Client1");
         String name = "Client1";
+        ServiceProvider serviceProvider = new ServiceProvider();
         when(clientRepository.save(client)).thenReturn(client);
+        when(clientRepository.findById(anyLong())).thenReturn(Optional.of(client));
 
+        ResultActions clientResultActions = mockMvc.perform(post("/clients")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"clientId\": 1, \"clientName\": \"TestClient\", \"consumers\": [], \"serviceProviders\": [], \"reviews\": []}"));
+        clientResultActions.andExpect(status().isOk());
+
+        ResultActions addProviderResultActions = mockMvc.perform(post("/client/{id}/serviceProvider", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"parentClientId\": 1, \"serviceProviderName\":\"TestProvider\", \"address\": \"New York\", \"location\": [4.0, 4.0], \"availabilities\": [{\"startTime\":\"2022-10-26T08:00:00\",\"endTime\":\"2022-10-26T09:00:00\"}]}"));
+                addProviderResultActions.andExpect(status().isOk());
+
+        ResultActions deleteProviderResultActions = mockMvc.perform(post("/client/{id}/service_providers/{serviceProviderId}", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"id\": 2, \"parentClientId\": 1, \"serviceProviderName\":\"TestProvider\", \"address\": \"New York\", \"location\": [4.0, 4.0], \"availabilities\": [{\"startTime\":\"2022-10-26T08:00:00\",\"endTime\":\"2022-10-26T09:00:00\"}]}"));
+                deleteProviderResultActions.andExpect(status().isOk());
+/*
         ServiceProvider serviceProvider = new ServiceProvider();
         serviceProvider.setAddress("New York");
         serviceProvider.setId(1);
@@ -300,7 +317,9 @@ class MatchingControllerTest {
         ResponseEntity<Object> responseEntity = matchingController.serviceProviderAdd(1L, serviceProvider);
         ServiceProvider result = (ServiceProvider) responseEntity.getBody();
         matchingController.deleteServiceProviders(1L, 1L);
-        verify(serviceProviderRepository, times(1)).delete(serviceProvider);
+
+ */
+        verify(serviceProviderRepository, times(1)).deleteById(2L);
     }
 
     @Test
