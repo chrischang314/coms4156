@@ -24,6 +24,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+
 import org.junit.runner.RunWith;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -125,19 +127,20 @@ class MatchingControllerTest {
         client.setConsumers(new ArrayList<>());
         client.setClientId(1L);
         when(clientRepository.save(client)).thenReturn(client);
+        when(clientRepository.findById(eq(1L))).thenReturn(Optional.of(client));
 
         ResultActions clientResultActions = mockMvc.perform(post("/clients")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"clientId\": 1, \"clientName\": \"TestClient\", \"consumers\": [], \"serviceProviders\": [], \"reviews\": []}"));
                 clientResultActions.andExpect(status().isOk());
-/*
+
         ResultActions consumerResultActions = mockMvc.perform(post("/client/{id}/consumer", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"parentClientId\": 1, \"consumerName\":\"TestConsumer\", \"address\": \"New York\", \"location\": [4.0, 4.0]}"));
                 consumerResultActions.andExpect(status().isOk());
 
- */
 
+/*
         Consumer consumer = new Consumer();
         consumer.setConsumerName("ConsumerA");
         consumer.setAddress("New York");
@@ -148,17 +151,21 @@ class MatchingControllerTest {
         consumerLocation.add(4.0);
         consumer.setLocation(consumerLocation);
 
+ */
 
-       // verify(clientRepository, times(1)).findById(eq(1L));
-      //  verify(consumerRepository, times(1)).findByParentClientIdAndConsumerNameIgnoreCase(eq(1L), eq("TestConsumer"));
-      //  verify(consumerRepository, times(1)).save(any(Consumer.class));
 
+        verify(clientRepository, times(1)).findById(eq(1L));
+        verify(consumerRepository, times(1)).findByParentClientIdAndConsumerNameIgnoreCase(eq(1L), eq("TestConsumer"));
+        verify(consumerRepository, times(1)).save(any(Consumer.class));
+/*
         ResponseEntity<Object> responseEntity = matchingController.consumerAdd(1L, consumer);
         Object responseBody = responseEntity.getBody();
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertTrue(responseBody instanceof Consumer);
         Consumer result = (Consumer) responseBody;
         assertEquals(result, consumer);
+
+ */
     }
 
     @Test
