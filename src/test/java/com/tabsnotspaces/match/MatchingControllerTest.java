@@ -1,5 +1,6 @@
 package com.tabsnotspaces.match;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.StatusResultMatchers;
 import org.springframework.test.web.servlet.ResultActions;
@@ -63,7 +64,8 @@ class MatchingControllerTest {
     @InjectMocks
     private MatchingController matchingController;
 
-    private final MockMvc mockMvc = MockMvcBuilders.standaloneSetup(matchingController).build();
+    @Autowired
+    private MockMvc mockMvc;
 
     @BeforeEach
     void setUp() {
