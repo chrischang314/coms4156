@@ -18,6 +18,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.springframework.http.HttpStatus;
 import static org.mockito.Mockito.*;
 
 //@RunWith(SpringRunner.class)
@@ -89,6 +90,7 @@ class MatchingControllerTest {
         String name = "Client1";
         when(clientRepository.save(client)).thenReturn(client);
         matchingController.clientsAdd(client);
+
         Consumer consumer = new Consumer();
         consumer.setAddress("New York");
         consumer.setParentClientId(client.getClientId());
@@ -98,8 +100,10 @@ class MatchingControllerTest {
         consumerLocation.add(4.0);
         consumer.setLocation(consumerLocation);
         when(consumerRepository.save(consumer)).thenReturn(consumer);
+
         ResponseEntity<Object> responseEntity = matchingController.consumerAdd(client.getClientId(), consumer);
         Object responseBody = responseEntity.getBody();
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertTrue(responseBody instanceof Consumer);
         Consumer result = (Consumer) responseBody;
         assertEquals(result, consumer);
