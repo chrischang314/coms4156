@@ -121,7 +121,7 @@ class MatchingControllerTest {
         consumerLocation.add(4.0);
         consumer.setLocation(consumerLocation);
 
-        ResponseEntity<Object> responseEntity = matchingController.consumerAdd(client.getClientId(), consumer);
+        ResponseEntity<Object> responseEntity = matchingController.consumerAdd(1L, consumer);
         Object responseBody = responseEntity.getBody();
         System.out.println("Response entity: " + responseEntity.getBody());
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
