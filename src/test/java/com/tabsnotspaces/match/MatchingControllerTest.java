@@ -331,13 +331,14 @@ class MatchingControllerTest {
         client.setClientName("Client1");
         String name = "Client1";
         when(clientRepository.save(client)).thenReturn(client);
+        when(clientRepository.findById(anyLong())).thenReturn(Optional.of(client));
 
         ResultActions clientResultActions = mockMvc.perform(post("/clients")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"clientId\": 1, \"clientName\": \"TestClient\", \"consumers\": [], \"serviceProviders\": [], \"reviews\": []}"));
         clientResultActions.andExpect(status().isOk());
 
-        ResultActions consumerResultActions = mockMvc.perform(post("/client/{id}/consumer", 4L)
+        ResultActions consumerResultActions = mockMvc.perform(post("/client/{id}/consumer", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"parentClientId\": 1, \"consumerName\":\"TestConsumer\", \"address\": \"New York\", \"location\": [4.0, 4.0]}"));
         consumerResultActions.andExpect(status().isOk());
