@@ -105,11 +105,12 @@ class MatchingControllerTest {
     @Test
     void consumerAddTest() {
         Client client = new Client();
-        client.setClientName("ClientA");
+        client.setClientName("ClientB");
         client.setServiceProviders(new ArrayList<>());
         client.setConsumers(new ArrayList<>());
         client.setClientId(1L);
-        matchingController.clientsAdd(client);
+        ResponseEntity<Object> addClientResponse = matchingController.clientsAdd(client);
+        System.out.println("Client add entity: " + addClientResponse.getBody());
 
         Consumer consumer = new Consumer();
         consumer.setConsumerName("ConsumerA");
