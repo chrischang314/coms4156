@@ -43,7 +43,7 @@ import org.mockito.MockitoAnnotations;
 @RunWith(MockitoJUnitRunner.class)
 @AutoConfigureMockMvc
 @WebMvcTest(MatchingController.class)
-@SpringBootTest
+//@SpringBootTest
 class MatchingControllerTest {
 
     @Mock
