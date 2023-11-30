@@ -250,7 +250,7 @@ class MatchingControllerTest {
             ResultActions addRequestResultActions = mockMvc.perform(post("/client/{id}/consumerRequest", 1L)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content("{\"consumerId\": 4, \"requestDate\": {\"startTime\": \"2022-10-26T08:00:00\",\"endTime\": \"2022-10-26T09:00:00\"}, \"preferredProviderId\": 2}"));
-            addRequestResultActions.andExpect(status().isOk());
+            addRequestResultActions.andExpect(status().isAccepted());
         } catch (Exception e) {}
 
         verify(serviceProviderRepository, times(1)).findByAvailabilities(any(TupleDateTime.class));
