@@ -133,7 +133,7 @@ class MatchingControllerTest {
 
         ResultActions consumerResultActions = mockMvc.perform(post("/client/{id}/consumer", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"parentClientId\": 1, \"consumerName\":\"TestConsumer\", \"address\": \"New York\", \"location\": (4.0, 4.0)}"));
+                .content("{\"parentClientId\": 1, \"consumerName\":\"TestConsumer\", \"address\": \"New York\", \"location\": [4.0, 4.0]}"));
                 consumerResultActions.andExpect(status().isOk());
         /*
         Consumer consumer = new Consumer();
