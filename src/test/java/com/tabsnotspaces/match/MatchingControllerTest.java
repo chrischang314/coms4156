@@ -365,6 +365,7 @@ class MatchingControllerTest {
         when(serviceProviderRepository.save(serviceProvider)).thenReturn(serviceProvider);
         when(consumerRepository.findById(anyLong())).thenReturn(Optional.of(consumer));
         when(serviceProviderRepository.findById(anyLong())).thenReturn(Optional.of(serviceProvider));
+        when(any(Appointment.class).getAppointmentTime()).thenReturn(time);
 
         ResultActions clientResultActions = mockMvc.perform(post("/clients")
                 .contentType(MediaType.APPLICATION_JSON)
