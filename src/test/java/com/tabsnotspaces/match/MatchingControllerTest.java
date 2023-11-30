@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -353,7 +354,8 @@ class MatchingControllerTest {
         serviceProvider.getLocation().add(4.0);
         serviceProvider.getLocation().add(4.0);
         serviceProvider.setAvailabilities(new ArrayList<>());
-        serviceProvider.getAvailabilities().add(new TupleDateTime());
+        TupleDateTime time = new TupleDateTime(LocalDateTime.of(2022, Month.OCTOBER, 26, 8, 0, 0), LocalDateTime.of(2022, Month.OCTOBER, 26, 9, 0, 0));
+        serviceProvider.getAvailabilities().add(time);
         serviceProvider.setBookings(new ArrayList<>());
         serviceProvider.setServices(new ArrayList<>());
 
