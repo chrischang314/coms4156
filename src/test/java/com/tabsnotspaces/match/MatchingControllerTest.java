@@ -65,8 +65,11 @@ class MatchingControllerTest {
     @Mock
     private AppointmentRepository appointmentRepository;
 
+    @Inject
+    private MatchApplication MatchApplication;
+
     @MockBean
-    MatchApplication matchApplication;
+    public MatchApplication matchApplication;
 
     @InjectMocks
     private MatchingController matchingController;
