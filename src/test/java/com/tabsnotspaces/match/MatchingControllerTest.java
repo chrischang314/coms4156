@@ -336,6 +336,7 @@ class MatchingControllerTest {
         client.setClientName("Client1");
 
         Consumer consumer = new Consumer();
+        consumer.setConsumerId(4L);
         consumer.setParentClientId(1L);
         consumer.setConsumerName("TestConsumer");
         consumer.setAddress("New York");
@@ -344,6 +345,7 @@ class MatchingControllerTest {
         consumer.getLocation().add(4.0);
 
         ServiceProvider serviceProvider = new ServiceProvider();
+        serviceProvider.setId(2L);
         serviceProvider.setParentClientId(1L);
         serviceProvider.setProviderName("TestProvider");
         serviceProvider.setAddress("New York");
