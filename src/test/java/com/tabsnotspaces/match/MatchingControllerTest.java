@@ -2,6 +2,7 @@ package com.tabsnotspaces.match;
 
 import jakarta.inject.Inject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.StatusResultMatchers;
@@ -41,6 +42,7 @@ import org.mockito.MockitoAnnotations;
 
 @RunWith(MockitoJUnitRunner.class)
 @AutoConfigureMockMvc
+@WebMvcTest(MatchingController.class)
 @SpringBootTest
 class MatchingControllerTest {
 
@@ -64,12 +66,6 @@ class MatchingControllerTest {
 
     @Mock
     private AppointmentRepository appointmentRepository;
-
-    @Inject
-    private MatchApplication MatchApplication;
-
-    @MockBean
-    public MatchApplication matchApplication;
 
     @InjectMocks
     private MatchingController matchingController;
