@@ -51,14 +51,14 @@ jobs:
     - name: Start MySQL
       run: sudo service mysql start
 
-    - name: Build with Maven
+    - name: Build with Maven / Unit Tests
       run: mvn -B package --file pom.xml
 
-    - name: Update dependency graph
-      uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
+#    - name: Update dependency graph
+#      uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
 
-    - name: Unit Tests
-      run: mvn test
+#    - name: Unit Tests
+#      run: mvn test
 
     - name: JaCoCo Code Coverage Report
       id: jacoco_reporter
