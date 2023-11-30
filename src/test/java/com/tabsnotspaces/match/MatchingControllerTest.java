@@ -127,7 +127,7 @@ class MatchingControllerTest {
         client.setConsumers(new ArrayList<>());
         client.setClientId(1L);
         when(clientRepository.save(client)).thenReturn(client);
-        when(clientRepository.findById(eq(anyLong()))).thenReturn(Optional.of(client));
+        when(clientRepository.findById(anyLong())).thenReturn(Optional.of(client));
 
         ResultActions clientResultActions = mockMvc.perform(post("/clients")
                 .contentType(MediaType.APPLICATION_JSON)
