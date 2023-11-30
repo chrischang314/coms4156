@@ -1,5 +1,11 @@
 package com.tabsnotspaces.match;
 
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.result.StatusResultMatchers;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import org.springframework.test.web.servlet.MockMvc;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,15 +29,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.springframework.http.HttpStatus;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import org.mockito.MockitoAnnotations;
 
 @RunWith(MockitoJUnitRunner.class)
 @AutoConfigureMockMvc
 @SpringBootTest
 class MatchingControllerTest {
-
-    @InjectMocks
-    private MatchingController matchingController;
 
     @Mock
     private ClientRepository clientRepository;
@@ -53,6 +59,11 @@ class MatchingControllerTest {
 
     @Mock
     private AppointmentRepository appointmentRepository;
+
+    @InjectMocks
+    private MatchingController matchingController;
+
+    private final MockMvc mockMvc = MockMvcBuilders.standaloneSetup(matchingController).build();
 
     @BeforeEach
     void setUp() {
@@ -105,14 +116,19 @@ class MatchingControllerTest {
 
     @Transactional
     @Test
-    void consumerAddTest() {
+    void consumerAddTest() throws Exception {
         Client client = new Client();
         client.setClientName("ClientB");
         client.setServiceProviders(new ArrayList<>());
         client.setConsumers(new ArrayList<>());
+        client.setClientId(1L);
         when(clientRepository.save(client)).thenReturn(client);
-        Client savedClient = clientRepository.save(client);
 
+        ResultActions resultActions = mockMvc.perform(post("/client/{id}/consumer", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"parentClientId\": 1L, \"consumerName\":\"TestConsumer\", \"consumerAddress\": \"New York\", \"consumerLocation\": (4.0, 4.0)}"));
+                resultActions.andExpect(status().isOk());
+        /*
         Consumer consumer = new Consumer();
         consumer.setConsumerName("ConsumerA");
         consumer.setAddress("New York");
@@ -122,7 +138,12 @@ class MatchingControllerTest {
         consumerLocation.add(4.0);
         consumerLocation.add(4.0);
         consumer.setLocation(consumerLocation);
+        */
 
+        verify(clientRepository, times(1)).findById(eq(1L));
+        verify(consumerRepository, times(1)).findByParentClientIdAndConsumerNameIgnoreCase(eq(1L), eq("TestConsumer"));
+        verify(consumerRepository, times(1)).save(any(Consumer.class));
+/*
         ResponseEntity<Object> responseEntity = matchingController.consumerAdd(savedClient.getClientId(), consumer);
         Object responseBody = responseEntity.getBody();
         System.out.println("Response entity: " + responseEntity.getBody());
@@ -130,6 +151,8 @@ class MatchingControllerTest {
         assertTrue(responseBody instanceof Consumer);
         Consumer result = (Consumer) responseBody;
         assertEquals(result, consumer);
+
+ */
     }
 
     @Test
