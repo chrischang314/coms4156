@@ -289,6 +289,8 @@ class MatchingControllerTest {
     void deleteServiceProvidersTest() throws Exception {
         Client client = new Client();
         client.setClientId(1);
+        client.setServiceProviders(new ArrayList<>());
+        client.setConsumers(new ArrayList<>());
         client.setClientName("Client1");
         String name = "Client1";
         ServiceProvider serviceProvider = new ServiceProvider();
@@ -298,11 +300,11 @@ class MatchingControllerTest {
         ResultActions clientResultActions = mockMvc.perform(post("/clients")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"clientId\": 1, \"clientName\": \"TestClient\", \"consumers\": [], \"serviceProviders\": [], \"reviews\": []}"));
-        clientResultActions.andExpect(status().isOk());
+                clientResultActions.andExpect(status().isOk());
 
         ResultActions addProviderResultActions = mockMvc.perform(post("/client/{id}/serviceProvider", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"parentClientId\": 1, \"providerName\": \"TestProvider\", \"address\": \"New York\", \"location\": [4.0, 4.0], \"availabilities\": [{\"startTime\":\"2022-10-26T08:00:00\",\"endTime\":\"2022-10-26T09:00:00\"}]}"));
+                .content("{\"id\": 2, \"parentClientId\": 1, \"providerName\": \"TestProvider\", \"address\": \"New York\", \"location\": [4.0, 4.0], \"availabilities\": [{\"startTime\":\"2022-10-26T08:00:00\",\"endTime\":\"2022-10-26T09:00:00\"}]}"));
                 addProviderResultActions.andExpect(status().isOk());
 
         ResultActions deleteProviderResultActions = mockMvc.perform(delete("/client/{id}/service_providers/{serviceProviderId}", 1L, 2L)
