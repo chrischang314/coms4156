@@ -123,6 +123,7 @@ class MatchingControllerTest {
 
         ResponseEntity<Object> responseEntity = matchingController.consumerAdd(client.getClientId(), consumer);
         Object responseBody = responseEntity.getBody();
+        System.out.println("Response entity: " + responseEntity.getBody());
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertTrue(responseBody instanceof Consumer);
         Consumer result = (Consumer) responseBody;
