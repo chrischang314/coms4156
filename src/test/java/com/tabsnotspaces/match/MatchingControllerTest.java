@@ -51,22 +51,22 @@ class MatchingControllerTest {
     @MockBean
     private ClientRepository clientRepository;
 
-    @Mock
+    @MockBean
     private ConsumerRepository consumerRepository;
 
-    @Mock
+    @MockBean
     private ServiceProviderRepository serviceProviderRepository;
 
-    @Mock
+    @MockBean
     private ServiceRepository serviceRepository;
 
-    @Mock
+    @MockBean
     private ReviewRepository reviewRepository;
 
-    @Mock
+    @MockBean
     private ConsumerRequestRepository consumerRequestRepository;
 
-    @Mock
+    @MockBean
     private AppointmentRepository appointmentRepository;
 
     @InjectMocks
