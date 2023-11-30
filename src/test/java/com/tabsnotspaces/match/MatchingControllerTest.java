@@ -269,13 +269,41 @@ class MatchingControllerTest {
     }
 
     @Test
-    void deleteCustomerTest() {
+    void deleteCustomerTest() throws Exception {
         Client client = new Client();
         client.setClientId(1);
+        client.setServiceProviders(new ArrayList<>());
+        client.setConsumers(new ArrayList<>());
         client.setClientName("Client1");
-        String name = "Client1";
-        when(clientRepository.save(client)).thenReturn(client);
 
+        Consumer consumer = new Consumer();
+        consumer.setConsumerId(4L);
+        consumer.setParentClientId(1L);
+        consumer.setConsumerName("TestConsumer");
+        consumer.setAddress("New York");
+        consumer.setLocation(new ArrayList<>());
+        consumer.getLocation().add(4.0);
+        consumer.getLocation().add(4.0);
+        when(clientRepository.save(client)).thenReturn(client);
+        when(clientRepository.findById(anyLong())).thenReturn(Optional.of(client));
+        when(consumerRepository.save(consumer)).thenReturn(consumer);
+        when(consumerRepository.findById(anyLong())).thenReturn(Optional.of(consumer));
+
+        ResultActions clientResultActions = mockMvc.perform(post("/clients")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"clientId\": 1, \"clientName\": \"TestClient\", \"consumers\": [], \"serviceProviders\": [], \"reviews\": []}"));
+        clientResultActions.andExpect(status().isOk());
+
+        ResultActions consumerResultActions = mockMvc.perform(post("/client/{id}/consumer", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"id\": 4, \"parentClientId\": 1, \"consumerName\": \"TestConsumer\", \"address\": \"New York\", \"location\": [4.0, 4.0]}"));
+        consumerResultActions.andExpect(status().isOk());
+
+        ResultActions deleteAppointmentResultActions = mockMvc.perform(delete("/client/{id}/consumer/{consumerId}", 1L, 4L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"consumerId\": 4}"));
+        deleteAppointmentResultActions.andExpect(status().isOk());
+/*
         Consumer consumer = new Consumer();
         consumer.setConsumerId(1);
         consumer.setAddress("New York");
@@ -283,7 +311,9 @@ class MatchingControllerTest {
         consumer.setAppointments(new ArrayList<Appointment>());
         when(consumerRepository.save(consumer)).thenReturn(consumer);
         matchingController.deleteCustomer(1L, 1L);
-        verify(consumerRepository, times(1)).delete(consumer);
+
+ */
+        verify(consumerRepository, times(1)).deleteById(4L);
     }
 
     @Test

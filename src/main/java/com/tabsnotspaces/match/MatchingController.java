@@ -129,7 +129,6 @@ public class MatchingController {
 	@PostMapping("/client/{id}/consumer")
 	public ResponseEntity<Object> consumerAdd(@PathVariable @Min(value = 1, message = "client id should be greater than 0") Long id,
 									  @Valid @RequestBody Consumer consumer) {
-		System.out.println("invoking consumerAdd");
 		Optional<Client> clientOpt = repository.findById(id);
 		if (clientOpt.isEmpty()) {
 			return ResponseEntity.badRequest().body(String.format("Client with ID: '%d' does not exist!", id));
