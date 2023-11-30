@@ -109,20 +109,19 @@ class MatchingControllerTest {
         client.setServiceProviders(new ArrayList<>());
         client.setConsumers(new ArrayList<>());
         client.setClientId(1L);
-        ResponseEntity<Object> addClientResponse = matchingController.clientsAdd(client);
-        System.out.println("Client add entity: " + addClientResponse.getBody());
+        Client savedClient = clientRepository.save(client);
 
         Consumer consumer = new Consumer();
         consumer.setConsumerName("ConsumerA");
         consumer.setAddress("New York");
-        consumer.setParentClientId(client.getClientId());
+        consumer.setParentClientId(savedClient.getClientId());
         consumer.setAppointments(new ArrayList<Appointment>());
         ArrayList<Double> consumerLocation = new ArrayList<>();
         consumerLocation.add(4.0);
         consumerLocation.add(4.0);
         consumer.setLocation(consumerLocation);
 
-        ResponseEntity<Object> responseEntity = matchingController.consumerAdd(1L, consumer);
+        ResponseEntity<Object> responseEntity = matchingController.consumerAdd(savedClient.getClientId(), consumer);
         Object responseBody = responseEntity.getBody();
         System.out.println("Response entity: " + responseEntity.getBody());
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
