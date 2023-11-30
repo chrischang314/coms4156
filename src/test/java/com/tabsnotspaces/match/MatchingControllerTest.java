@@ -124,7 +124,6 @@ class MatchingControllerTest {
     void deleteClientTest() {
     }
 
-    @Transactional
     @Test
     void consumerAddTest() throws Exception {
         Client client = new Client();
