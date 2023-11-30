@@ -334,9 +334,30 @@ class MatchingControllerTest {
         client.setServiceProviders(new ArrayList<>());
         client.setConsumers(new ArrayList<>());
         client.setClientName("Client1");
-        String name = "Client1";
+
+        Consumer consumer = new Consumer();
+        consumer.setParentClientId(1L);
+        consumer.setConsumerName("TestConsumer");
+        consumer.setAddress("New York");
+        consumer.setLocation(new ArrayList<>());
+        consumer.getLocation().add(4.0);
+        consumer.getLocation().add(4.0);
+
+        ServiceProvider serviceProvider = new ServiceProvider();
+        serviceProvider.setParentClientId(1L);
+        serviceProvider.setProviderName("TestProvider");
+        serviceProvider.setAddress("New York");
+        serviceProvider.setLocation(new ArrayList<>());
+        serviceProvider.getLocation().add(4.0);
+        serviceProvider.getLocation().add(4.0);
+        serviceProvider.setAvailabilities(new ArrayList<>());
+        serviceProvider.getAvailabilities().add(new TupleDateTime());
+        serviceProvider.setBookings(new ArrayList<>());
+
         when(clientRepository.save(client)).thenReturn(client);
         when(clientRepository.findById(anyLong())).thenReturn(Optional.of(client));
+        when(consumerRepository.save(consumer)).thenReturn(consumer);
+        when(serviceProviderRepository.save(serviceProvider)).thenReturn(serviceProvider);
 
         ResultActions clientResultActions = mockMvc.perform(post("/clients")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -350,7 +371,7 @@ class MatchingControllerTest {
 
         ResultActions addProviderResultActions = mockMvc.perform(post("/client/{id}/serviceProvider", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"id\": 2, \"parentClientId\": 1, \"providerName\": \"TestProvider\", \"address\": \"New York\", \"location\": [4.0, 4.0], \"availabilities\": [{\"startTime\":\"2022-10-26T08:00:00\",\"endTime\":\"2022-10-26T09:00:00\"}]}"));
+                .content("{\"id\": 2, \"parentClientId\": 1, \"providerName\": \"TestProvider\", \"address\": \"New York\", \"location\": [4.0, 4.0], \"availabilities\": [{\"startTime\":\"2022-10-26T08:00:00\",\"endTime\":\"2022-10-26T09:00:00\"}], \"bookings\": []}"));
                 addProviderResultActions.andExpect(status().isOk());
 
         ResultActions addAppointmentResultActions = mockMvc.perform(post("/client/{id}/bookAppointment", 1L)
