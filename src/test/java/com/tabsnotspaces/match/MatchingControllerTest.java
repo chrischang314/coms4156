@@ -109,7 +109,7 @@ class MatchingControllerTest {
         client.setServiceProviders(new ArrayList<>());
         client.setConsumers(new ArrayList<>());
         client.setClientId(1L);
-        clientRepository.save(client);
+        matchingController.clientsAdd(client);
 
         Consumer consumer = new Consumer();
         consumer.setConsumerName("ConsumerA");
