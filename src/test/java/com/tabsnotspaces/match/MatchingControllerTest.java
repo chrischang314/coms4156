@@ -189,8 +189,8 @@ class MatchingControllerTest {
         serviceProvider.setParentClientId(1);
         when(serviceProviderRepository.save(serviceProvider)).thenReturn(serviceProvider);
         ResponseEntity<Object> responseEntity = matchingController.serviceProviderAdd(1L, serviceProvider);
-        ServiceProvider result = (ServiceProvider) responseEntity.getBody();
-        assertEquals(result, serviceProvider);
+        String result = (String) responseEntity.getBody();
+        assertEquals(result, "Ok");
     }
 
     @Test
