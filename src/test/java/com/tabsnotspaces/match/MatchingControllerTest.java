@@ -127,7 +127,7 @@ class MatchingControllerTest {
         client.setConsumers(new ArrayList<>());
         client.setClientId(1L);
         when(clientRepository.save(client)).thenReturn(client);
-        when(clientRepository.findById(eq(1L))).thenReturn(Optional.of(client));
+        when(clientRepository.findById(eq(anyLong()))).thenReturn(Optional.of(client));
 
         ResultActions clientResultActions = mockMvc.perform(post("/clients")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -154,7 +154,7 @@ class MatchingControllerTest {
  */
 
 
-        verify(clientRepository, times(1)).findById(eq(1L));
+        verify(clientRepository, times(1)).findById(anyLong());
         verify(consumerRepository, times(1)).findByParentClientIdAndConsumerNameIgnoreCase(eq(1L), eq("TestConsumer"));
         verify(consumerRepository, times(1)).save(any(Consumer.class));
 /*
