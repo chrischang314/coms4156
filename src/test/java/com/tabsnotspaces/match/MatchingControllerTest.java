@@ -360,6 +360,8 @@ class MatchingControllerTest {
         when(clientRepository.findById(anyLong())).thenReturn(Optional.of(client));
         when(consumerRepository.save(consumer)).thenReturn(consumer);
         when(serviceProviderRepository.save(serviceProvider)).thenReturn(serviceProvider);
+        when(consumerRepository.findById(anyLong())).thenReturn(Optional.of(consumer));
+        when(serviceProviderRepository.findById(anyLong())).thenReturn(Optional.of(serviceProvider));
 
         ResultActions clientResultActions = mockMvc.perform(post("/clients")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -378,7 +380,7 @@ class MatchingControllerTest {
 
         ResultActions addAppointmentResultActions = mockMvc.perform(post("/client/{id}/bookAppointment", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"appointmentId\": 3, \"appointmentTime\": {\"startTime\":\"2022-10-26T08:00:00\",\"endTime\":\"2022-10-26T09:00:00\"}, \"serviceType\": \"Eldercare\", \"providerID\": 2, \"consumerId\": 4}"));
+                .content("{\"appointmentId\": 3, \"appointmentTime\": {\"startTime\": \"2022-10-26T08:00:00\",\"endTime\": \"2022-10-26T09:00:00\"}, \"serviceType\": \"Eldercare\", \"providerID\": 2, \"consumerId\": 4}"));
                 addAppointmentResultActions.andExpect(status().isOk());
 
         ResultActions deleteAppointmentResultActions = mockMvc.perform(delete("/client/{id}/appointment/{appointmentId}", 1L, 3L)
