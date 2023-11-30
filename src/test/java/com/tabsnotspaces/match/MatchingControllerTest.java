@@ -84,14 +84,15 @@ class MatchingControllerTest {
         ConsumerRepository consumerRepository = Mockito.mock(ConsumerRepository.class);
         Model model = Mockito.mock(Model.class);
         Client client = new Client();
-        client.setClientName("Client1");
+        client.setClientName("ClientA");
         client.setServiceProviders(new ArrayList<>());
         client.setConsumers(new ArrayList<>());
-        String name = "Client1";
+        String name = "ClientA";
         when(clientRepository.save(client)).thenReturn(client);
         matchingController.clientsAdd(client);
 
         Consumer consumer = new Consumer();
+        consumer.setConsumerName("ConsumerA");
         consumer.setAddress("New York");
         consumer.setParentClientId(client.getClientId());
         consumer.setAppointments(new ArrayList<Appointment>());
