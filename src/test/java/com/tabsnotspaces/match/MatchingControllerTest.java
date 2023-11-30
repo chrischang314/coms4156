@@ -331,6 +331,8 @@ class MatchingControllerTest {
     void deleteAppointmentTest() throws Exception {
         Client client = new Client();
         client.setClientId(1);
+        client.setServiceProviders(new ArrayList<>());
+        client.setConsumers(new ArrayList<>());
         client.setClientName("Client1");
         String name = "Client1";
         when(clientRepository.save(client)).thenReturn(client);
@@ -343,18 +345,23 @@ class MatchingControllerTest {
 
         ResultActions consumerResultActions = mockMvc.perform(post("/client/{id}/consumer", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"parentClientId\": 1, \"consumerName\": \"TestConsumer\", \"address\": \"New York\", \"location\": [4.0, 4.0]}"));
+                .content("{\"id\": 4, \"parentClientId\": 1, \"consumerName\": \"TestConsumer\", \"address\": \"New York\", \"location\": [4.0, 4.0]}"));
         consumerResultActions.andExpect(status().isOk());
+
+        ResultActions addProviderResultActions = mockMvc.perform(post("/client/{id}/serviceProvider", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"id\": 2, \"parentClientId\": 1, \"providerName\": \"TestProvider\", \"address\": \"New York\", \"location\": [4.0, 4.0], \"availabilities\": [{\"startTime\":\"2022-10-26T08:00:00\",\"endTime\":\"2022-10-26T09:00:00\"}]}"));
+                addProviderResultActions.andExpect(status().isOk());
 
         ResultActions addAppointmentResultActions = mockMvc.perform(post("/client/{id}/bookAppointment", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"appointmentId\": 3, \"appointmentTime\": [{\"startTime\":\"2022-10-26T08:00:00\",\"endTime\":\"2022-10-26T09:00:00\"}], \"serviceType\": \"Eldercare\", \"providerID\": 2, \"consumerId\": 4}"));
-        addAppointmentResultActions.andExpect(status().isOk());
+                addAppointmentResultActions.andExpect(status().isOk());
 
         ResultActions deleteAppointmentResultActions = mockMvc.perform(delete("/client/{id}/appointment/{appointmentId}", 1L, 3L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"appointmentId\": 3}"));
-        deleteAppointmentResultActions.andExpect(status().isOk());
+                deleteAppointmentResultActions.andExpect(status().isOk());
 
 
 /*
