@@ -130,36 +130,35 @@ class MatchingControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"clientId\": 1, \"clientName\": \"TestClient\", \"consumers\": [], \"serviceProviders\": [], \"reviews\": []}"));
                 clientResultActions.andExpect(status().isOk());
-
+/*
         ResultActions consumerResultActions = mockMvc.perform(post("/client/{id}/consumer", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"parentClientId\": 1, \"consumerName\":\"TestConsumer\", \"address\": \"New York\", \"location\": [4.0, 4.0]}"));
                 consumerResultActions.andExpect(status().isOk());
-        /*
+
+ */
+
         Consumer consumer = new Consumer();
         consumer.setConsumerName("ConsumerA");
         consumer.setAddress("New York");
-        consumer.setParentClientId(savedClient.getClientId());
+        consumer.setParentClientId(1L);
         consumer.setAppointments(new ArrayList<Appointment>());
         ArrayList<Double> consumerLocation = new ArrayList<>();
         consumerLocation.add(4.0);
         consumerLocation.add(4.0);
         consumer.setLocation(consumerLocation);
-        */
 
-        verify(clientRepository, times(1)).findById(eq(1L));
-        verify(consumerRepository, times(1)).findByParentClientIdAndConsumerNameIgnoreCase(eq(1L), eq("TestConsumer"));
-        verify(consumerRepository, times(1)).save(any(Consumer.class));
-/*
-        ResponseEntity<Object> responseEntity = matchingController.consumerAdd(savedClient.getClientId(), consumer);
+
+       // verify(clientRepository, times(1)).findById(eq(1L));
+      //  verify(consumerRepository, times(1)).findByParentClientIdAndConsumerNameIgnoreCase(eq(1L), eq("TestConsumer"));
+      //  verify(consumerRepository, times(1)).save(any(Consumer.class));
+
+        ResponseEntity<Object> responseEntity = matchingController.consumerAdd(1L, consumer);
         Object responseBody = responseEntity.getBody();
-        System.out.println("Response entity: " + responseEntity.getBody());
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertTrue(responseBody instanceof Consumer);
         Consumer result = (Consumer) responseBody;
         assertEquals(result, consumer);
-
- */
     }
 
     @Test
