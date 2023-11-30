@@ -306,8 +306,10 @@ class MatchingControllerTest {
 
         ResultActions deleteProviderResultActions = mockMvc.perform(post("/client/{id}/service_providers/{serviceProviderId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"id\": 2, \"parentClientId\": 1, \"serviceProviderName\":\"TestProvider\", \"address\": \"New York\", \"location\": [4.0, 4.0], \"availabilities\": [{\"startTime\":\"2022-10-26T08:00:00\",\"endTime\":\"2022-10-26T09:00:00\"}]}"));
+                .content("{\"id\": 2, \"parentClientId\": 1, \"providerName\":\"TestProvider\", \"address\": \"New York\", \"location\": [4.0, 4.0], \"availabilities\": [{\"startTime\":\"2022-10-26T08:00:00\",\"endTime\":\"2022-10-26T09:00:00\"}]}"));
                 deleteProviderResultActions.andExpect(status().isOk());
+
+
 /*
         ServiceProvider serviceProvider = new ServiceProvider();
         serviceProvider.setAddress("New York");
@@ -323,13 +325,35 @@ class MatchingControllerTest {
     }
 
     @Test
-    void deleteAppointmentTest() {
+    void deleteAppointmentTest() throws Exception {
         Client client = new Client();
         client.setClientId(1);
         client.setClientName("Client1");
         String name = "Client1";
         when(clientRepository.save(client)).thenReturn(client);
 
+        ResultActions clientResultActions = mockMvc.perform(post("/clients")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"clientId\": 1, \"clientName\": \"TestClient\", \"consumers\": [], \"serviceProviders\": [], \"reviews\": []}"));
+        clientResultActions.andExpect(status().isOk());
+
+        ResultActions consumerResultActions = mockMvc.perform(post("/client/{id}/consumer", 4L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"parentClientId\": 1, \"consumerName\":\"TestConsumer\", \"address\": \"New York\", \"location\": [4.0, 4.0]}"));
+        consumerResultActions.andExpect(status().isOk());
+
+        ResultActions addAppointmentResultActions = mockMvc.perform(post("/client/{id}/bookAppointment", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"appointmentId\": 3, \"appointmentTime\": [{\"startTime\":\"2022-10-26T08:00:00\",\"endTime\":\"2022-10-26T09:00:00\"}], \"serviceType\": \"Eldercare\", \"providerID\": 2, \"consumerId\": 4}"));
+        addAppointmentResultActions.andExpect(status().isOk());
+
+        ResultActions deleteAppointmentResultActions = mockMvc.perform(post("/client/{id}/appointment/{appointmentId}", 1L, 3L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"appointmentId\": 3}"));
+        deleteAppointmentResultActions.andExpect(status().isOk());
+
+
+/*
         Appointment appointment = new Appointment();
         appointment.setAppointmentId(1);
         appointment.setConsumerId(1);
@@ -337,7 +361,9 @@ class MatchingControllerTest {
         when(appointmentRepository.save(appointment)).thenReturn(appointment);
         Appointment result = matchingController.appointmentAdd(1L, appointment).getBody();
         matchingController.deleteAppointment(1L, 1L);
-        verify(appointmentRepository, times(1)).delete(appointment);
+
+ */
+        verify(appointmentRepository, times(1)).deleteById(3L);
     }
 
     @Test
