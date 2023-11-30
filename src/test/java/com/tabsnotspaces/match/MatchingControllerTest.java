@@ -128,7 +128,7 @@ class MatchingControllerTest {
 
         ResultActions clientResultActions = mockMvc.perform(post("/clients")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"clientId\": 1, \"clientName\":\"TestClient\""));
+                .content("{\"clientId\": 1, \"clientName\": \"TestClient\"}"));
                 clientResultActions.andExpect(status().isOk());
 
         ResultActions consumerResultActions = mockMvc.perform(post("/client/{id}/consumer", 1L)
