@@ -176,21 +176,44 @@ class MatchingControllerTest {
     }
 
     @Test
-    void serviceProviderAddTest() {
+    void serviceProviderAddTest() throws Exception {
         Client client = new Client();
         client.setClientId(1);
+        client.setServiceProviders(new ArrayList<>());
+        client.setConsumers(new ArrayList<>());
         client.setClientName("Client1");
-        String name = "Client1";
-        when(clientRepository.save(client)).thenReturn(client);
 
         ServiceProvider serviceProvider = new ServiceProvider();
+        serviceProvider.setId(2L);
+        serviceProvider.setParentClientId(1L);
+        serviceProvider.setProviderName("TestProvider");
         serviceProvider.setAddress("New York");
-        serviceProvider.setId(1);
-        serviceProvider.setParentClientId(1);
+        serviceProvider.setLocation(new ArrayList<>());
+        serviceProvider.getLocation().add(4.0);
+        serviceProvider.getLocation().add(4.0);
+        serviceProvider.setAvailabilities(new ArrayList<>());
+        TupleDateTime time = new TupleDateTime(LocalDateTime.of(2022, Month.OCTOBER, 26, 8, 0, 0), LocalDateTime.of(2022, Month.OCTOBER, 26, 9, 0, 0));
+        serviceProvider.getAvailabilities().add(time);
+        serviceProvider.setBookings(new ArrayList<>());
+        serviceProvider.setServices(new ArrayList<>());
+
+        when(clientRepository.save(client)).thenReturn(client);
+        when(clientRepository.findById(anyLong())).thenReturn(Optional.of(client));
         when(serviceProviderRepository.save(serviceProvider)).thenReturn(serviceProvider);
-        ResponseEntity<Object> responseEntity = matchingController.serviceProviderAdd(1L, serviceProvider);
-        String result = (String) responseEntity.getBody();
-        assertEquals(result, "Ok");
+        when(serviceProviderRepository.findById(anyLong())).thenReturn(Optional.of(serviceProvider));
+        when(serviceProviderRepository.save(serviceProvider)).thenReturn(serviceProvider);
+
+        ResultActions clientResultActions = mockMvc.perform(post("/clients")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"clientId\": 1, \"clientName\": \"TestClient\", \"consumers\": [], \"serviceProviders\": [], \"reviews\": []}"));
+        clientResultActions.andExpect(status().isOk());
+
+        ResultActions addProviderResultActions = mockMvc.perform(post("/client/{id}/serviceProvider", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"id\": 2, \"parentClientId\": 1, \"providerName\": \"TestProvider\", \"address\": \"New York\", \"location\": [4.0, 4.0], \"availabilities\": [{\"startTime\":\"2022-10-26T08:00:00\",\"endTime\":\"2022-10-26T09:00:00\"}], \"bookings\": [], \"services\": []}"));
+        addProviderResultActions.andExpect(status().isOk());
+
+        verify(serviceProviderRepository, times(1)).save(any(ServiceProvider.class));
     }
 
     @Test
