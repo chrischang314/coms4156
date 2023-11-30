@@ -409,9 +409,9 @@ public class MatchingController {
 					ServiceProvider provider = providerOpt.get();
 
 					// check that service provider is available for appointment and service requested matches
-					if (!provider.getServices().contains(appointment.getServiceType())) {
-						throw new RuntimeException("Service not available for this provider");
-					}
+					//if (!provider.getServices().contains(appointment.getServiceType())) {
+					//	throw new RuntimeException("Service not available for this provider");
+					//}
 					if (!provider.getAvailabilities().contains(appointment.getAppointmentTime())) {
 						throw new RuntimeException("Service provider not available at the requested time");
 					}
