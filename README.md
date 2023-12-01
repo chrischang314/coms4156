@@ -144,6 +144,10 @@ To run the Match Application, follow these steps:
 Continuous integration is done using GitHub Actions, and is run on all pull requests or pushes to the master branch. 
 The workflows contain coverage reports, static code analysis, and automated testing.
 
+(As the code has multiple instances of endpoints checking different cases, achieving complete converage was laborious. Also, 
+many functions are helper functions such as sorted service providers and we did not have any reliance on them in the main 
+methods. So, test units for these were not critical to the service endpoint methods.)
+
 ## Style Checking
 
 We used the Checkstyle style checker with the "Sun Checks" coding style specifications for Java.
