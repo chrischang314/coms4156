@@ -62,6 +62,9 @@ jobs:
     - name: Run Codacy Analysis CLI
       uses: codacy/codacy-analysis-cli-action@master
 
+    - name: start Spring Boot app
+      run: mvn spring-boot:run
+
     - name: Run API Tests
       id: run-newman
       uses: anthonyvscode/newman-action@v1
