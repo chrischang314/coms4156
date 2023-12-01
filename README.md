@@ -151,3 +151,10 @@ We used the Checkstyle style checker with the "Sun Checks" coding style specific
 The link to the Postman Collection with some start API's can be
 found [here](https://app.getpostman.com/join-team?invite_code=409679a1dec844deadebd4a22f3c5acd&target_code=a92949bc4a1ae5d66291956ecbb26cf5).
 A video of API testing via Postman can be seen [here](https://www.youtube.com/watch?v=fzW7lfTNeZs).
+
+## Sample Client
+A sample client app can be found [here](https://github.com/sm4410/coms4156-frontend). To run the app, Node.js and
+Angular are required to be installed. After, you can start up the app by the command "ng serve" in the main directory
+of the app. The client is configured to connect to the service running on the local machine, but you can change the
+url it connects to in the environment.ts file. The app will run on port 4200 by default, and is also able to
+simulate multiple clients. 
