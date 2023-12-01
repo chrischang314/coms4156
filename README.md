@@ -74,6 +74,11 @@ To run the Match Application, follow these steps:
 3. Build and run the application.
 4. Access the APIs using the provided endpoints.
 
+## CI Reports
+
+Continuous integration is done using GitHub Actions, and is run on all pull requests or pushes to the master branch. 
+The workflows contain coverage reports, static code analysis, and automated testing.
+
 ## Testing Resource
 
 The link to the Postman Collection with some start API's can be
