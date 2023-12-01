@@ -18,6 +18,7 @@ The Match Application provides the following API endpoints:
 
     - `GET /client/{id}`: Get a specific client by ID.
     - `GET /clients`: Get a list of all clients.
+    - `GET /client/{id}/allProviders`: Get all providers in a given client ID
     - `POST /clients`: Add a new client.
     - `DELETE /client/{id}`: Delete a client by ID.
     - `POST /client/{id}/consumer`: Add a consumer to a client.
@@ -38,8 +39,16 @@ The Match Application provides the following API endpoints:
 
 ## API Usage
 
-Detailed API usage instructions and request/response examples can be found in the source code of the project. Please
-refer to the codebase for specific usage details.
+1. **Client API**
+
+ - `GET /client/{id}`: Get a specific client by ID.
+        Use the HTTP GET method to get
+	    @param id The ID of the client to retrieve.
+        @return The client with the specified ID.
+                HttpStatus is 
+ - `GET /clients`: Get a list of all clients.
+	    @return An iterable list of all clients.
+
 
 ## Data Models
 
