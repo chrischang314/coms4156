@@ -1,0 +1,133 @@
+{
+	"info": {
+		"_postman_id": "596b6996-d857-481c-999d-32015f1d3002",
+		"name": "API Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30610139",
+		"_collection_link": "https://red-trinity-392290.postman.co/workspace/red-trinity-392290-Workspace~da914948-588c-4bca-8dee-95d3e24936d2/collection/30610139-596b6996-d857-481c-999d-32015f1d3002?action=share&source=collection_link&creator=30610139"
+	},
+	"item": [
+		{
+			"name": "Add Client",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"clientId\": 1, \"name\": \"Client1\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/clients",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"clients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Clients",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Add Consumer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"id\": 2, \"parentClientId\": 1, \"consumerName\":\"TestConsumer\", \"address\": \"New York\", \"location\": [4.0, 4.0]}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/client/1/consumer",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"client",
+						"1",
+						"consumer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Provider",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"id\": 3, \"parentClientId\": 1, \"providerName\": \"TestProvider\", \"address\": \"New York\", \"location\": [4.0, 4.0], \"availabilities\": [{\"startTime\":\"2022-10-26T08:00:00\",\"endTime\":\"2022-10-26T09:00:00\"}], \"bookings\": [], \"services\": []}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/client/1/serviceProvider",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"client",
+						"1",
+						"serviceProvider"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Consumer Request",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"requestId\":4,\"consumerId\":2,\"requestDate\":{\"startTime\":\"2022-10-26T08:00:00\",\"endTime\":\"2022-10-26T09:00:00\"},\"serviceType\":\"Gatling Gun\",\"preferredProviderID\":3}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/client/1/consumerRequest",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"client",
+						"1",
+						"consumerRequest"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
