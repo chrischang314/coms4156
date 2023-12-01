@@ -68,28 +68,15 @@ jobs:
     - name: Run Codacy Analysis CLI
       uses: codacy/codacy-analysis-cli-action@master
 
-    - name: set up node
-      uses: actions/setup-node@v1
+    - name: Run API Tests
+      id: run-newman
+      uses: anthonyvscode/newman-action@v1
       with:
-        node-version: '16.x'
+        collection: collection.json
+        reporters: cli
 
-    - name: Install newman
-      run: |
-        npm install -g newman
-        npm install -g newman-reporter-htmlextra
-
-    - name: Make Directory for results
-      run: mkdir -p testResults
-
-    - name: Run POSTMAN collection
-      run: |
-        newman run ./PostmanTests.json -e htmlextra --reporter-htmlextra-export testResults/htmlreport.html --reporter-htmlextra-darkTheme  > testResults/runreport1.html
-
-    - name: Output the run Details
-      uses: actions/upload-artifact@v2
-      with:
-        name: RunReports
-        path: testResults
+    - name: Output summary to console
+      run: echo ${{ steps.run-newman.outputs.summary }}
 
        
 
