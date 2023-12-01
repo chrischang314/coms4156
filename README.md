@@ -105,9 +105,11 @@ The Match Application provides the following API endpoints:
 4. **Review API**
     - `GET /client/{id}/review`: Get all reviews existing for the given client ID
     @param id                The ID of the client.  
+    @return The list of all reviews of given client ID
     - `POST /client/{id}/addReview`: Post review for the given clint ID
     @param id                The ID of the client.  
     @param review The new Review object to add.  
+    @return The newly created review
     - `DELETE /client/{id}/review/{reviewId}`:  Delete review with given ID,for  the given client ID  
     @param id                The ID of the client.  
     @param reviewId The Review id to delete.  
