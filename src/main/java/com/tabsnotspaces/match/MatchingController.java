@@ -357,6 +357,25 @@ public class MatchingController {
 	}
 
 	/**
+	 * Retrieve a list of all service providers associated with the client ID.
+	 *
+	 * @param consumerRequest The consumer request with date and service type.
+	 * @return A list of service providers matching the request, sorted by proximity and rating.
+	 */
+	@GetMapping("/client/{id}/allProviders")
+	public ResponseEntity<List<ServiceProvider>> getAllProviders(@PathVariable Long id) {
+		Optional<Client> cOpt = repository.findById(id);
+		if(cOpt.isPresent()) {
+			List<ServiceProvider> serviceProviders = serviceProviderRepository.findByParentClientId(id);
+			return new ResponseEntity<List<ServiceProvider>> (serviceProviders, HttpStatus.OK);
+		}
+		else {
+			List<ServiceProvider> nullList = null;
+			return new ResponseEntity<List<ServiceProvider>> (nullList, HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	/**
 	 * Retrieve a list of service providers sorted by proximity and rating.
 	 *
 	 * @param consumerRequest The consumer request with date and service type.
