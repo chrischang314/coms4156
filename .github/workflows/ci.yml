@@ -64,6 +64,7 @@ jobs:
 
     - name: start Spring Boot app
       run: mvn spring-boot:run
+      background: true
 
     - name: Run API Tests
       id: run-newman
@@ -74,6 +75,10 @@ jobs:
 
     - name: Output summary to console
       run: echo ${{ steps.run-newman.outputs.summary }}
+
+    - name: Stop Spring Boot Application
+      run: |
+        pkill -f 'java -jar'
 
        
 
