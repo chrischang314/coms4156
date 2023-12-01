@@ -1,216 +1,20 @@
 {
 	"info": {
-		"_postman_id": "a6c28b5e-329e-4e41-8710-8ad79e5026d9",
-		"name": "One Piece",
+		"_postman_id": "596b6996-d857-481c-999d-32015f1d3002",
+		"name": "API Tests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "30610139",
-		"_collection_link": "https://red-trinity-392290.postman.co/workspace/red-trinity-392290-Workspace~da914948-588c-4bca-8dee-95d3e24936d2/collection/30547824-a6c28b5e-329e-4e41-8710-8ad79e5026d9?action=share&source=collection_link&creator=30610139"
+		"_collection_link": "https://red-trinity-392290.postman.co/workspace/red-trinity-392290-Workspace~da914948-588c-4bca-8dee-95d3e24936d2/collection/30610139-596b6996-d857-481c-999d-32015f1d3002?action=share&source=collection_link&creator=30610139"
 	},
 	"item": [
 		{
-			"name": "localhost:8080/clients",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:8080/clients",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"clients"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:8080/clients?name=Thendi",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"POST Client check1\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData.clientName).to.eql(\"FirstClient\");",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"url": {
-					"raw": "localhost:8080/clients?name=FirstClient",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"clients"
-					],
-					"query": [
-						{
-							"key": "name",
-							"value": "FirstClient"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:8080/clients?name=Candy",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"POST Client check2\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData.clientName).to.eql(\"Candy\");",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"url": {
-					"raw": "localhost:8080/clients?name=Candy",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"clients"
-					],
-					"query": [
-						{
-							"key": "name",
-							"value": "Candy"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:8080/clients?name=One+Piece",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"POST Client check2\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData.clientName).to.eql(\"One Piece\");",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"url": {
-					"raw": "localhost:8080/clients?name=One+Piece",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"clients"
-					],
-					"query": [
-						{
-							"key": "name",
-							"value": "One+Piece"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:8080/clients",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Get at least 3 clients test\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData.length).to.gte(3);",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:8080/clients",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"clients"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:8080/client/3",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:8080/client/3",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"client",
-						"3"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:8080/client/3/consumer",
+			"name": "Add Client",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"consumerId\":0,\"consumerName\":\"Captain Morgan\",\"parentClientId\":3,\"location\": [40.7128, -74.0060],\"consumerRequests\":[],\"appointments\":[]}",
+					"raw": "{\"clientId\": 1, \"name\": \"Client1\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -218,14 +22,49 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/client/3/consumer",
+					"raw": "localhost:8080/clients",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"clients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Clients",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Add Consumer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"id\": 2, \"parentClientId\": 1, \"consumerName\":\"TestConsumer\", \"address\": \"New York\", \"location\": [4.0, 4.0]}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/client/1/consumer",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"client",
-						"3",
+						"1",
 						"consumer"
 					]
 				}
@@ -233,13 +72,13 @@
 			"response": []
 		},
 		{
-			"name": "localhost:8080/client/3/serviceProvider",
+			"name": "Add Provider",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"providerId\":0,\"parentClientId\":3,\"providerName\":\"Luffy\",\"location\": [40.7128, -74.0060],\"servicesOffered\":[\"Pistol\",\"Gatling Gun\",\"Rocket\"],\"availability\":\"2022-10-26\",\"avgRating\":5,\"bookings\":[]}",
+					"raw": "{\"id\": 3, \"parentClientId\": 1, \"providerName\": \"TestProvider\", \"address\": \"New York\", \"location\": [4.0, 4.0], \"availabilities\": [{\"startTime\":\"2022-10-26T08:00:00\",\"endTime\":\"2022-10-26T09:00:00\"}], \"bookings\": [], \"services\": []}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -247,14 +86,14 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/client/3/serviceProvider",
+					"raw": "localhost:8080/client/1/serviceProvider",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"client",
-						"3",
+						"1",
 						"serviceProvider"
 					]
 				}
@@ -262,32 +101,13 @@
 			"response": []
 		},
 		{
-			"name": "localhost:8080/client/3",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:8080/client/3",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"client",
-						"3"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:8080/client/3/consumerRequest",
+			"name": "Add Consumer Request",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"requestId\":0,\"consumerId\":1,\"requestDate\":\"2022-10-26\",\"serviceType\":\"Gatling Gun\",\"preferredProviderID\":1}",
+					"raw": "{\"requestId\":4,\"consumerId\":2,\"requestDate\":{\"startTime\":\"2022-10-26T08:00:00\",\"endTime\":\"2022-10-26T09:00:00\"},\"serviceType\":\"Gatling Gun\",\"preferredProviderID\":3}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -295,456 +115,17 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/client/3/consumerRequest",
+					"raw": "localhost:8080/client/1/consumerRequest",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"client",
-						"3",
+						"1",
 						"consumerRequest"
 					]
 				}
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:8080/client/3/bookAppointment",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\"appointmentId\":0,\"appointmentDate\":\"2022-10-26\",\"serviceType\":\"Gatling Gun\",\"providerID\":1,\"consumerId\":1}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:8080/client/3/bookAppointment",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"client",
-						"3",
-						"bookAppointment"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:8080/clients",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:8080/clients",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"clients"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:8080/client/3/addReview",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Successful POST request\", function () {",
-							"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\"reviewId\":0, \"rating\":5, \"reviewText\":\"Good\", \"reviewDateTime\":\"2023-10-27T07:40:23.614+00:00\", \"providerId\":1, \"consumerId\":2}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:8080/client/3/addReview",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"client",
-						"3",
-						"addReview"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:8080/clients/2/reviews",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:8080/clients/2/reviews",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"clients",
-						"2",
-						"reviews"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:8080/client/3/addAvailability?providerId=1",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Successful POST request\", function () {",
-							"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\"startTime\":\"2022-10-26T03:00:00\",\"endTime\":\"2022-10-26T04:00:00\"}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:8080/client/3/addAvailability?providerId=1",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"client",
-						"3",
-						"addAvailability"
-					],
-					"query": [
-						{
-							"key": "providerId",
-							"value": "1"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:8080/client/3/addAvailability?providerId=1",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Successful POST request\", function () {",
-							"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\"startTime\":\"2022-10-26T05:00:00\",\"endTime\":\"2022-10-26T06:00:00\"}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:8080/client/3/addAvailability?providerId=1",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"client",
-						"3",
-						"addAvailability"
-					],
-					"query": [
-						{
-							"key": "providerId",
-							"value": "1"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:8080/client/3/getAvailability?providerId=1",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"At least two availabilities\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData.length).to.gte(2);",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:8080/client/3/getAvailability?providerId=1",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"client",
-						"3",
-						"getAvailability"
-					],
-					"query": [
-						{
-							"key": "providerId",
-							"value": "1"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:8080/client/3/addAvailability?providerId=1",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Successful POST request\", function () {",
-							"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\"startTime\":\"2022-10-26T08:00:00\",\"endTime\":\"2022-10-26T09:00:00\"}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:8080/client/3/addAvailability?providerId=1",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"client",
-						"3",
-						"addAvailability"
-					],
-					"query": [
-						{
-							"key": "providerId",
-							"value": "1"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:8080/client/3/getAvailability?providerId=1",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"At least three availabilities\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData.length).to.gte(3);",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:8080/client/3/getAvailability?providerId=1",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"client",
-						"3",
-						"getAvailability"
-					],
-					"query": [
-						{
-							"key": "providerId",
-							"value": "1"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:8080/client/3/deleteAvailability?providerId=1",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\"startTime\":\"2022-10-26T08:00:00\",\"endTime\":\"2022-10-26T09:00:00\"}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:8080/client/3/deleteAvailability?providerId=1",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"client",
-						"3",
-						"deleteAvailability"
-					],
-					"query": [
-						{
-							"key": "providerId",
-							"value": "1"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:8080/client/3/consumerRequest",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"At least two availabilities 2\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData.length).to.gte(2);",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{ \"requestId\": 1, \"consumerId\": 0, \"requestDate\": {\"startTime\":\"2022-10-26T08:00:00\",\"endTime\":\"2022-10-26T09:00:00\"}, \"serviceType\": \"Pistol\"}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:8080/client/3/consumerRequest",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"client",
-						"3",
-						"consumerRequest"
-					],
-					"query": [
-						{
-							"key": "",
-							"value": "1",
-							"disabled": true
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "New Request",
-			"request": {
-				"method": "GET",
-				"header": []
 			},
 			"response": []
 		}
