@@ -63,8 +63,7 @@ jobs:
       uses: codacy/codacy-analysis-cli-action@master
 
     - name: start Spring Boot app
-      run: mvn spring-boot:run
-      background: true
+      run: nohup mvn spring-boot:run &
 
     - name: Run API Tests
       id: run-newman
