@@ -151,6 +151,7 @@ We used the Checkstyle style checker with the "Sun Checks" coding style specific
 The link to the Postman Collection with some start API's can be
 found [here](https://app.getpostman.com/join-team?invite_code=409679a1dec844deadebd4a22f3c5acd&target_code=a92949bc4a1ae5d66291956ecbb26cf5).
 A video of API testing via Postman can be seen [here](https://www.youtube.com/watch?v=fzW7lfTNeZs).
+A link to database persistence testing can be seen [here](https://docs.google.com/document/d/1eoRkn8gq1HRkxllWjNaj0VbxDW0YpKKzI4bNtDAS-2c/edit?usp=sharing)
 
 ## Sample Client
 A sample client app can be found [here](https://github.com/sm4410/coms4156-frontend). To run the app, Node.js and
