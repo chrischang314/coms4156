@@ -193,10 +193,10 @@ public class MatchingController {
 	}
 
 	/**
-	 * Add a new service provider to a client.
+	 * Add a new service to a client.
 	 *
 	 * @param id      The ID of the client.
-	 * @param service The new service provider to add.
+	 * @param service The new service to add.
 	 * @return The newly created service provider.
 	 */
 	@PostMapping("/client/{id}/service")
