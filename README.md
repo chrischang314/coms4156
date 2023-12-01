@@ -79,6 +79,10 @@ To run the Match Application, follow these steps:
 Continuous integration is done using GitHub Actions, and is run on all pull requests or pushes to the master branch. 
 The workflows contain coverage reports, static code analysis, and automated testing.
 
+## Style Checking
+
+We used the Checkstyle style checker with the "Sun Checks" coding style specifications for Java.
+
 ## Testing Resource
 
 The link to the Postman Collection with some start API's can be
