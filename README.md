@@ -37,17 +37,80 @@ The Match Application provides the following API endpoints:
     - `POST /client/{id}/bookAppointment`: Book an appointment with a service provider.
     - `DELETE /client/{id}/appointment/{appointmentId}`: Cancel an appointment.
 
-## API Usage
+4. **Review API**
+    - `GET /client/{id}/review`: Get all reviews existing for the given client ID
+    - `POST /client/{id}/addReview`: Post review for the given client ID
+    - `DELETE /client/{id}/review/{reviewId}`: Delete review with given ID,for the given client ID
+
+## API Usage Notes
 
 1. **Client API**
 
- - `GET /client/{id}`: Get a specific client by ID.
-        Use the HTTP GET method to get
-	    @param id The ID of the client to retrieve.
-        @return The client with the specified ID.
-                HttpStatus is 
- - `GET /clients`: Get a list of all clients.
-	    @return An iterable list of all clients.
+ - `GET /client/{id}`: Get a specific client by ID.  
+	    @param id The ID of the client to retrieve.  
+        @return The client with the specified ID.  
+                HttpStatus is 400 in case no client exists for given ID  
+ - `GET /clients`: Get a list of all clients.   
+	    @return An iterable list of all clients. 
+ - `GET /client/{id}/allProviders`: Get all providers in a given client ID  
+     @param consumerRequest The consumer request with date and service type.  
+     @return A list of service providers matching the request, sorted by proximity and rating.  
+                HttpStatus is 400 in case no client exists for given ID  
+ - `POST /clients`: Add a new client.  
+     @param client The new client to add.  
+     @return The newly created client.  
+ - `DELETE /client/{id}`: Delete a client by ID.  
+     @param id The ID of the client to delete.
+ - `POST /client/{id}/consumer`: Add a consumer to a client.  
+     @param id       The ID of the client.  
+     @param consumer The new consumer to add.  
+     @return The newly created consumer.  
+                HttpStatus is 400 in case no client exists for given ID  
+ - `POST /client/{id}/serviceProvider`: Add a service provider to a client.  
+     @param id               The ID of the client.  
+     @param serviceProvider   The new service provider to add.  
+     @return The newly created service provider.  
+                HttpStatus is 400 in case no client exists for given ID, OR if service provider with name already EXISTS
+ - `POST /client/{id}/consumerRequest`: Add a consumer request for appointment scheduling.  
+     @param id                The ID of the client.  
+     @param consumerRequest   The new consumer request to add.   
+     @return The newly created consumer request.  
+ - `DELETE /client/{id}/consumer/{consumerId}`: Delete a consumer from a client.  
+     @param id         The ID of the client.  
+     @param consumerId The ID of the consumer to delete.  
+ - `DELETE /client/{id}/service_providers/{serviceProviderId}`: Delete a service provider from a client.   
+     @param id                  The ID of the client.  
+     @param serviceProviderId    The ID of the service provider to delete.  
+ - `DELETE /client/{id}/consumerRequest/{consumerRequestId}`: Delete a consumer request.  
+     @param id                   The ID of the client.  
+     @param consumerRequestId    The ID of the consumer request to delete.  
+
+2. **Matching and Scheduling API**
+
+    - `POST /client/{id}/consumerRequest`: Sort and retrieve available service providers based on consumer request.  
+    @param id                The ID of the client.  
+    @param consumerRequest   The new consumer request to add.  
+    @return The newly created consumer request.  
+
+3. **Appointment API**
+
+    - `POST /client/{id}/bookAppointment`: Book an appointment with a service provider.  
+    @param id          The ID of the client.  
+    @param appointment The new appointment to book.  
+    @return The newly created appointment.  
+    - `DELETE /client/{id}/appointment/{appointmentId}`: Cancel an appointment.  
+    @param id              The ID of the client.  
+    @param appointmentId   The ID of the appointment to delete.  
+
+4. **Review API**
+    - `GET /client/{id}/review`: Get all reviews existing for the given client ID
+    @param id                The ID of the client.  
+    - `POST /client/{id}/addReview`: Post review for the given clint ID
+    @param id                The ID of the client.  
+    @param review The new Review object to add.  
+    - `DELETE /client/{id}/review/{reviewId}`:  Delete review with given ID,for  the given client ID  
+    @param id                The ID of the client.  
+    @param reviewId The Review id to delete.  
 
 
 ## Data Models

@@ -86,12 +86,10 @@ public class MatchingController {
 		return repository.findAll();
 	}
 
-	// TODO change to @RequestBody Client client as input
 	/**
 	 * Create a new client.
 	 *
 	 * @param client The new client to add.
-	 * @return The newly created client.
 	 * @return The newly created client.
 	 */
 	@PostMapping("/clients")
@@ -104,7 +102,7 @@ public class MatchingController {
 		return ResponseEntity.ok(repository.save(client));
 	}
 
-	@GetMapping("/client{id}/review")
+	@GetMapping("/client/{id}/review")
 	public List<Review> getReview(@PathVariable @Min(value = 1, message = "client id should be greater than 0") Long id) {
 		return (List<Review>) reviewRepository.findAll();
 	}
@@ -483,6 +481,18 @@ public class MatchingController {
 	void deleteAppointment(@PathVariable Long id, @PathVariable Long appointmentId) {
 		appointmentRepository.deleteById(appointmentId);
 
+		//TODO confirm if we also need to delete from serviceProviders and consumers appointment lists and figure out.
+	}
+
+	/**
+	 * Delete an appointment by ID.
+	 *
+	 * @param id              The ID of the client.
+	 * @param appointmentId   The ID of the appointment to delete.
+	 */
+	@DeleteMapping("/client/{id}/review/{reviewId}")
+	void deleteReview(@PathVariable Long id, @PathVariable Long reviewId) {
+		reviewRepository.deleteById(reviewId);
 		//TODO confirm if we also need to delete from serviceProviders and consumers appointment lists and figure out.
 	}
 
