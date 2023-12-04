@@ -1,6 +1,6 @@
-# Match Application API Documentation
+# Match Service API Documentation
 
-The Match Application is a project that provides a platform for scheduling appointments between clients and service
+The Match Service is a project that provides a platform for scheduling appointments between clients and service
 providers. This README provides an overview of the available APIs and their usage.
 
 ## Table of Contents
