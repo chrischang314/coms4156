@@ -187,6 +187,8 @@ We used the Checkstyle style checker with the "Sun Checks" coding style specific
 
 ## Testing Resource
 
+The entire Postman [workspace][https://www.postman.com/red-trinity-392290/workspace/red-trinity-392290-workspace/overview] is now public, and the collection "New Service Tests" under this has the new API tests that passed for the updated API in this iteration.
+
 The link to the Postman Collection with some start API's can be
 found [here](https://app.getpostman.com/join-team?invite_code=409679a1dec844deadebd4a22f3c5acd&target_code=a92949bc4a1ae5d66291956ecbb26cf5).
 A video of API testing via Postman can be seen [here](https://www.youtube.com/watch?v=fzW7lfTNeZs).
@@ -202,7 +204,6 @@ simulate multiple clients.
 
 # Tests for multiple client instances
 
-Instructions for tests with multiple instances of the client is in this doc.  
-https://docs.google.com/document/d/1L5SUP2ngKrWnFArTArXg9g7Pf5iDaPZfepBEqO5tul8/edit?usp=sharing  
+Instructions for tests with multiple instances of the client is in this [document][https://docs.google.com/document/d/1L5SUP2ngKrWnFArTArXg9g7Pf5iDaPZfepBEqO5tul8/edit?usp=sharing]  
 
 Please contact the testers for setting up the service on the Google App Engine before running such tests.   
